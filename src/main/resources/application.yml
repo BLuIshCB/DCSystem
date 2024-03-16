@@ -1,0 +1,39 @@
+spring:
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 6
+      jedis:
+        pool:
+          # ????????????????????
+          max-active: 8
+          # ???????????
+          max-idle: 8
+          # ???????????
+          min-idle: 2
+
+          # ???????????????????????
+          max-wait: 300ms
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db_mypj1?serverTimezone=UTC
+    username: root
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+
+server:
+  port: 6061
+
+cbinfo:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    admin-secret-key: CBKey
+    # 设置jwt过期时间
+    admin-ttl: 7200000
+    # 设置前端传递过来的令牌名称
+    admin-token-name: token
+    user-secret-key: USERKey
+    user-ttl: 7200000
+    user-token-name: authentication
