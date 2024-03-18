@@ -40,8 +40,7 @@ public class EmployeeService {
         password = DigestUtils.md5DigestAsHex(password.getBytes());
         if (!password.equals(employee.getPassword())) {
             //密码错误
-            System.out.println(employee.getPassword());
-            System.out.println(password);
+           
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
         }
 

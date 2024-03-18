@@ -1,4 +1,4 @@
-package com.cb.system.annotation;
+package com.cb.common.annotation;
 
 
 

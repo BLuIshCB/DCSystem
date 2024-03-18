@@ -8,12 +8,11 @@ import com.cb.pojo.dto.EmployeeLoginDTO;
 import com.cb.pojo.entity.Employee;
 import com.cb.pojo.vo.EmployeeLoginVO;
 import com.cb.system.service.EmployeeService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +20,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/admin/employee")
 @Slf4j
+@Api(tags = "员工相关接口")
 /*
 * 员工相关接口
 * */
@@ -32,7 +32,7 @@ public class loginController {
     private JwtProperties jwtProperties;
 
     @PostMapping("/login")
-
+    @ApiOperation(value = "员工登录")
     public Result<EmployeeLoginVO> login(@RequestBody EmployeeLoginDTO employeeLoginDTO) {
         log.info("员工登录：{}", employeeLoginDTO);
 
@@ -56,8 +56,11 @@ public class loginController {
                 .build();
 
         return Result.success(employeeLoginVO);
-
     }
-
+    @GetMapping ("/test")
+    public Result<String> test(){
+        System.out.println("11");
+        return Result.success("test");
+    }
 
 }

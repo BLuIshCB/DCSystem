@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<jjwt>0.9.1</jjwt>
+		<knife4j>3.0.3</knife4j>
 	</properties>
 	<dependencies>
 		<!--起步配置-->
@@ -85,6 +86,13 @@
 			<artifactId>log4j</artifactId>
 			<version>3.1.1</version>
 		</dependency>
+		<!--接口文档生成-->
+		<dependency>
+			<groupId>com.github.xiaoymin</groupId>
+			<artifactId>knife4j-spring-boot-starter</artifactId>
+			<version>${knife4j}</version>
+		</dependency>
+
 		<!--	其他-->
 		<dependency>
 			<groupId>javax.servlet</groupId>
