@@ -1,4 +1,4 @@
-package com.cb.system.controller;
+package com.cb.server_system.controller;
 
 import com.cb.common.constant.JwtClaimsConstant;
 import com.cb.common.properties.JwtProperties;
@@ -7,7 +7,7 @@ import com.cb.common.utils.JwtUtil;
 import com.cb.pojo.dto.EmployeeLoginDTO;
 import com.cb.pojo.entity.Employee;
 import com.cb.pojo.vo.EmployeeLoginVO;
-import com.cb.system.service.EmployeeService;
+import com.cb.server_system.service.EmployeeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;

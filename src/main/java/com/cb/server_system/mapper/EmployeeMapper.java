@@ -1,10 +1,8 @@
-package com.cb.system.mapper;
+package com.cb.server_system.mapper;
 
 
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cb.pojo.entity.Employee;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 

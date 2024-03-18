@@ -1,4 +1,4 @@
-package com.cb.system.service;
+package com.cb.server_system.service;
 
 import com.cb.common.constant.MessageConstant;
 import com.cb.common.constant.StatusConstant;
@@ -7,7 +7,7 @@ import com.cb.common.exception.AccountNotFoundException;
 import com.cb.common.exception.PasswordErrorException;
 import com.cb.pojo.dto.EmployeeLoginDTO;
 import com.cb.pojo.entity.Employee;
-import com.cb.system.mapper.EmployeeMapper;
+import com.cb.server_system.mapper.EmployeeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
