@@ -94,6 +94,12 @@
 			<artifactId>pagehelper-spring-boot-starter</artifactId>
 			<version>${pagehelper}</version>
 		</dependency>
+		<!--生成测试对象工具-->
+		<dependency>
+			<groupId>com.github.houbb</groupId>
+			<artifactId>data-factory-core</artifactId>
+			<version>0.0.8</version>
+		</dependency>
 
 		<!--	其他-->
 		<dependency>
