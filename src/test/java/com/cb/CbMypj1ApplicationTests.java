@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @SpringBootTest
@@ -27,12 +28,12 @@ class CbMypj1ApplicationTests {
 @Autowired
 	DishMapper dishMapper;
 	@Test
-	void contextLoads() {
-//		System.out.println(dishMapper.countByCategoryId(1l));
-		Dish dish = DataUtil.build(Dish.class);
-		System.out.println(dish);
-//		dishMapper.insert(dish);
-//		dishMapper.getById(2l);
+	void utilTest() {
+//		Dish dish= DataUtil.build(Dish.class);//生成随机对象
+		BigDecimal money = new BigDecimal(2);
+		Dish dish = new Dish(11l,"test",1l,money,"image","rar",
+				1,null,null,null,null);
+	dishMapper.insert(dish);
 	}
 
 }

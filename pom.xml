@@ -19,8 +19,10 @@
 		<jjwt>0.9.1</jjwt>
 		<knife4j>3.0.3</knife4j>
 		<pagehelper>1.3.0</pagehelper>
+		<aspectj>1.9.4</aspectj>
 	</properties>
 	<dependencies>
+
 		<!--起步配置-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -31,7 +33,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		<!--AOP切面依赖-->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${aspectj}</version>
+		</dependency>
 		<!--jwt令牌依赖-->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -43,6 +50,7 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
+
 		<!--数据库链接-->
 		<!-- mybatis -->
 		<dependency>
@@ -77,6 +85,7 @@
 			<artifactId>lombok</artifactId>
 			<version>1.18.30</version>
 		</dependency>
+		<!--日志-->
 		<dependency>
 			<groupId>com.tersesystems.echopraxia</groupId>
 			<artifactId>log4j</artifactId>
