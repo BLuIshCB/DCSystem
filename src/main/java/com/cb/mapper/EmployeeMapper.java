@@ -1,4 +1,4 @@
-package com.cb.server_admin.mapper;
+package com.cb.mapper;
 
 
 
