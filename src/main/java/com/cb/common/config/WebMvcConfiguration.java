@@ -1,6 +1,7 @@
 package com.cb.common.config;
 
 import com.cb.common.interceptor.JwtTokenAdminInterceptor;
+import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +13,8 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+
+import java.util.Properties;
 
 
 /**
@@ -46,8 +49,20 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 //                .excludePathPatterns("/user/user/login")
 //                .excludePathPatterns("/user/shop/status");
     }
-
-
+    /**
+    * 使用mybatis plus 与pagehleper时需要加入下面的配置
+    * */
+    @Bean
+    public PageHelper pageHelper(){
+        PageHelper pageHelper = new PageHelper();
+        Properties properties = new Properties();
+        properties.setProperty("offsetAsPageNum","true");
+        properties.setProperty("rowBoundsWithCount","true");
+        properties.setProperty("reasonable","true");
+        properties.setProperty("dialect","mysql");
+        pageHelper.setProperties(properties);
+        return pageHelper;
+    }
     /**
     *   接口文档生成的配置
     * */

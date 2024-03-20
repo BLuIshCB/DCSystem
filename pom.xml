@@ -103,6 +103,13 @@
 			<artifactId>pagehelper-spring-boot-starter</artifactId>
 			<version>${pagehelper}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.pagehelper</groupId>
+			<artifactId>pagehelper</artifactId>
+			<version>5.1.11</version>
+			<scope>compile</scope>
+		</dependency>
+
 		<!--生成测试对象工具-->
 		<dependency>
 			<groupId>com.github.houbb</groupId>
