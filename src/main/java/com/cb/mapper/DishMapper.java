@@ -3,9 +3,9 @@ package com.cb.mapper;
 
 import com.cb.common.annotation.AutoFill;
 import com.cb.common.enumeration.OperationType;
-import com.cb.pojo.dto.DishVO;
 import com.cb.pojo.entity.Dish;
 import com.cb.pojo.page.DishPageQueryDTO;
+import com.cb.pojo.vo.DishVO;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;

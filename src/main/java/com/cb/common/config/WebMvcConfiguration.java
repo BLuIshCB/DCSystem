@@ -99,25 +99,25 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
      * 设置静态资源映射，主要是访问接口文档（html、js、css）
      * @param registry
      */
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        log.info("开始设置静态资源映射...");
-        registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
-        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
-        registry.addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
-        registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        log.info("开始设置静态资源映射...");
+//        registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
+//        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+//        registry.addResourceHandler("swagger-ui.html")
+//                .addResourceLocations("classpath:/META-INF/resources/");
+//        registry.addResourceHandler("/webjars/**")
+//                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+//
+//    }
 
-    }
-
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addRedirectViewController("/null/api-docs",
-                "/api-docs").setKeepQueryParams(true);
-        registry.addRedirectViewController("/null/swagger-resources/configuration/ui",
-                "/swagger-resources/configuration/ui");
-
-    }
+//    @Override
+//    public void addViewControllers(ViewControllerRegistry registry) {
+//        registry.addRedirectViewController("/null/api-docs",
+//                "/api-docs").setKeepQueryParams(true);
+//        registry.addRedirectViewController("/null/swagger-resources/configuration/ui",
+//                "/swagger-resources/configuration/ui");
+//
+//    }
 
 
 }

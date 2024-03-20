@@ -39,3 +39,8 @@ cbinfo:
 mybatis-plus:
   type-aliases-package: com.cb.pojo.entity
   mapper-locations: classpath:mapper/*.xml
+pagehelper:
+  helper-dialect: mysql
+  support-methods-arguments: true
+  params: count=countSql
+  reasonable: true
