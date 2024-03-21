@@ -19,8 +19,8 @@ public class upLoadImageController {
     @PostMapping("/upLoadImage")
     public Result<String> upLoadImage( @RequestParam("dishid") String dishid,@RequestParam("imageid") String imageid,MultipartFile file) {
         try {
-            System.out.println(dishid);
-            System.out.println(imageid);
+//            System.out.println(dishid);
+//            System.out.println(imageid);
             file.transferTo(new File("D:\\CBBC\\IDEA_SPACE\\CB_MYPJ1\\myimage\\"+"dish_"+dishid+"image_"+imageid+".jpg"));
         } catch (IOException e) {
             throw new ImageErrorException(MessageConstant.IMAGE_ERROR);

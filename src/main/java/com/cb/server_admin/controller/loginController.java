@@ -59,7 +59,7 @@ public class loginController {
     }
     @GetMapping ("/test")
     public Result<String> test(){
-        System.out.println("11");
+
         return Result.success("test");
     }
 

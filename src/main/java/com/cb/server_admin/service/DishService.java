@@ -68,7 +68,6 @@ public class DishService  {
      */
     //todo
     public PageResult pageQuery(DishPageQueryDTO dishPageQueryDTO) {
-//        PageHelper.startPage(dishPageQueryDTO.getPage(), dishPageQueryDTO.getPageSize());
         PageHelper.startPage(dishPageQueryDTO.getPage(), dishPageQueryDTO.getPageSize());
         Page<DishVO> page = dishMapper.pageQuery(dishPageQueryDTO);
         return new PageResult(page.getTotal(), page.getResult());
@@ -156,14 +155,20 @@ public class DishService  {
     /**
      * 菜品起售停售
      *
-     * @param status
      * @param id
      */
     @Transactional
-    public void startOrStop(Integer status, Long id) {
+    public void startOrStop(Long id) {
+        int status = dishMapper.selectStatus(id);
+        int change =0;
+        if (status == 0) {
+             change = 1;
+        }else {
+             change = 0;
+        }
         Dish dish = Dish.builder()
                 .id(id)
-                .status(status)
+                .status(change)
                 .build();
         dishMapper.update(dish);
 /*

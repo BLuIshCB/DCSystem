@@ -12,9 +12,11 @@ import com.cb.pojo.page.DishPageQueryDTO;
 import com.cb.server_admin.service.DishService;
 import com.cb.server_admin.service.EmployeeService;
 import com.github.houbb.data.factory.core.util.DataUtil;
+import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -37,14 +39,19 @@ class CbMypj1ApplicationTests {
 	}
 	@Autowired
 	DishService dishService;
+	@Autowired
+	RedisTemplate redisTemplate;
 	@Test
 	void Test1() {
-//		System.out.println(dishService.getByIdWithFlavor(1L));
+
 //		dishService.startOrStop(0,2l);
 		DishPageQueryDTO d = new DishPageQueryDTO();
 		d.setPage(1);
 		d.setPageSize(2);
 //		d.setName("test");
+		String a = "2a";
+		String b= "2b";
 		System.out.println(dishService.pageQuery(d));
+		redisTemplate.opsForValue().set(a,b);
 	}
 }
