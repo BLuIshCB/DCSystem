@@ -58,11 +58,10 @@ public interface CategoryMapper {
      */
     @AutoFill(value = OperationType.UPDATE)
     void update(Category category);
-//    /**
-//     * 根据类型查询分类
-//     * @param type
-//     * @return
-//     */
-//    List<Category> list(Integer type);
+
+    //查询状态
+    @Select("select status from category where id = #{id}")
+    int selectStatus (Long id );
+
 
 }

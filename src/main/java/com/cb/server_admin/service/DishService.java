@@ -160,7 +160,7 @@ public class DishService  {
     @Transactional
     public void startOrStop(Long id) {
         int status = dishMapper.selectStatus(id);
-        int change =0;
+        int change ;
         if (status == 0) {
              change = 1;
         }else {
