@@ -1,30 +1,50 @@
 package com.cb.server_admin.controller;
 
 import com.cb.common.constant.MessageConstant;
-import com.cb.common.exception.AccountNotFoundException;
 import com.cb.common.exception.ImageErrorException;
 import com.cb.common.result.Result;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.cb.mapper.imageMapper;
+import com.cb.pojo.entity.img;
+import com.cb.server_common.service.imgService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 @RestController
 @RequestMapping("/admin")
+@Slf4j
 public class upLoadImageController {
+    @Autowired
+    imgService imgService;
     @PostMapping("/upLoadImage")
-    public Result<String> upLoadImage( @RequestParam("dishid") String dishid,@RequestParam("imageid") String imageid,MultipartFile file) {
+    public Result<String> upLoadImage(@RequestParam("dishid") int dishid, @RequestParam("imageid") int imageid, MultipartFile file) {
         try {
-//            System.out.println(dishid);
-//            System.out.println(imageid);
-            file.transferTo(new File("D:\\CBBC\\IDEA_SPACE\\CB_MYPJ1\\myimage\\"+"dish_"+dishid+"image_"+imageid+".jpg"));
+            //原始文件名
+            String originalFilename = file.getOriginalFilename();
+            //截取原始文件名的后缀
+            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            String filePath = "D:\\CBBC\\IDEA_SPACE\\CB_MYPJ1\\myimage\\" + "dish_" + dishid + "image_" + imageid +extension;
+            file.transferTo(new File(filePath));
+            //将文件信息保存到数据库
+            img img =new img().builder().imgUrl(filePath).dishId(dishid).imgIndex(imageid).build();
+            boolean flag = imgService.set(img);
+
+            Result<String> stringResult = new Result<>(1, "上传成功", filePath);
+            return stringResult;
         } catch (IOException e) {
-            throw new ImageErrorException(MessageConstant.IMAGE_ERROR);
+            log.error("文件上传失败：{}", e);
         }
-        return Result.success("上传成功");
+            return Result.error("上传失败");
+    }
+    @GetMapping(value = "/getImage/{dishId}/{imageid}" ,produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getImage(@PathVariable  Integer dishId,@PathVariable Integer imageid ) throws Exception {
+        log.info("{}/{}",dishId,imageid);
+        return  imgService.getImg(dishId,imageid);
     }
 }

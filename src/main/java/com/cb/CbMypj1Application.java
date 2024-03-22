@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Slf4j
 @EnableCaching//开发缓存注解功能
 @EnableScheduling //开启任务调度
-
+@MapperScan("com.cb.mapper")
 public class CbMypj1Application {
 
 	public static void main(String[] args) {

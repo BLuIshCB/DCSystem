@@ -4,6 +4,8 @@ package com.cb;
 import com.cb.mapper.CategoryMapper;
 import com.cb.mapper.DishMapper;
 import com.cb.mapper.EmployeeMapper;
+import com.cb.mapper.imageMapper;
+
 import com.cb.pojo.dto.DishDTO;
 import com.cb.pojo.entity.Category;
 import com.cb.pojo.entity.Dish;
@@ -11,6 +13,7 @@ import com.cb.pojo.page.CategoryPageQueryDTO;
 import com.cb.pojo.page.DishPageQueryDTO;
 import com.cb.server_admin.service.DishService;
 import com.cb.server_admin.service.EmployeeService;
+import com.cb.server_common.service.imgService;
 import com.github.houbb.data.factory.core.util.DataUtil;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
@@ -54,4 +57,15 @@ class CbMypj1ApplicationTests {
 		System.out.println(dishService.pageQuery(d));
 		redisTemplate.opsForValue().set(a,b);
 	}
+	@Autowired
+	imageMapper imgMapper;
+	@Autowired
+	imgService imgService;
+
+	@Test
+	void Test2() {
+//		System.out.println(imgMapper.selectById(1));
+
+	}
+
 }
