@@ -1,6 +1,7 @@
 package com.cb.common.config;
 
 import com.cb.common.interceptor.JwtTokenAdminInterceptor;
+import com.cb.common.interceptor.JwtTokenUserInterceptor;
 import com.cb.common.utils.JacksonObjectMapper;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -31,24 +32,25 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
     @Autowired
     private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
+    @Autowired
+    private JwtTokenUserInterceptor jwtTokenUserInterceptor;
     /**
      * 注册自定义拦截器
      * @param registry
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        log.info("开始注册自定义拦截器...");
-
-
+        log.info("开始注册admin自定义拦截器...");
 
         registry.addInterceptor(jwtTokenAdminInterceptor)
                 .addPathPatterns("/admin/**")
                 .excludePathPatterns("/admin/employee/login");
 
-//        registry.addInterceptor(jwtTokenUserInterceptor)
-//                .addPathPatterns("/user/**")
-//                .excludePathPatterns("/user/user/login")
-//                .excludePathPatterns("/user/shop/status");
+        log.info("开始注册user自定义拦截器...");
+        registry.addInterceptor(jwtTokenUserInterceptor)
+                .addPathPatterns("/user/**")
+                .excludePathPatterns("/user/user/login")
+                .excludePathPatterns("/user/shop/status");
     }
     /**
     * 使用mybatis plus 与pagehleper时需要加入下面的配置

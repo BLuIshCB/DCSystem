@@ -8,6 +8,8 @@ import com.cb.pojo.entity.img;
 import com.cb.server_common.service.imgService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,23 +22,24 @@ import java.io.IOException;
 @RequestMapping("/admin")
 @Slf4j
 public class upLoadImageController {
+    @Value("${cbinfo.img.url}")
+    String URL;
     @Autowired
     imgService imgService;
     @PostMapping("/upLoadImage")
     public Result<String> upLoadImage(@RequestParam("dishid") int dishid, @RequestParam("imageid") int imageid, MultipartFile file) {
         try {
+            log.info("url:{}",URL);
             //原始文件名
             String originalFilename = file.getOriginalFilename();
             //截取原始文件名的后缀
             String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            String filePath = "D:\\CBBC\\IDEA_SPACE\\CB_MYPJ1\\myimage\\" + "dish_" + dishid + "image_" + imageid +extension;
+            String filePath = URL + "dish_" + dishid + "image_" + imageid +extension;
             file.transferTo(new File(filePath));
             //将文件信息保存到数据库
             img img =new img().builder().imgUrl(filePath).dishId(dishid).imgIndex(imageid).build();
             boolean flag = imgService.set(img);
-
-            Result<String> stringResult = new Result<>(1, "上传成功", filePath);
-            return stringResult;
+            return Result.success("上传成功");
         } catch (IOException e) {
             log.error("文件上传失败：{}", e);
         }
