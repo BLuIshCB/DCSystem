@@ -107,5 +107,12 @@ public class CategoryService  {
         categoryMapper.update(category);
     }
 
+    /**
+     * 查询分类
+     * @return
+     */
+    public List<Category> list() {
+        return categoryMapper.list();
+    }
 
 }

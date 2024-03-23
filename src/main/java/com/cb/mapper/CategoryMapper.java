@@ -65,5 +65,11 @@ public interface CategoryMapper {
     @Select("select status from category where id = #{id}")
     int selectStatus (Long id );
 
+    /**
+     * 查询分类集合
+     * @return
+     */
+    List<Category> list();
+
 
 }
