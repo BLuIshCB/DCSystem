@@ -50,7 +50,9 @@ public interface CategoryMapper {
      */
     @Delete("delete from category where id = #{id}")
     void deleteById(Long id);
-
+//    拿名字
+    @Select("select name from category where id =#{id}")
+    String getName(Long id);
     /**
      * 根据id修改分类
      *

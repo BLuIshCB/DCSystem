@@ -46,11 +46,11 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 .addPathPatterns("/admin/**")
                 .excludePathPatterns("/admin/employee/login");
 
-        log.info("开始注册user自定义拦截器...");
-        registry.addInterceptor(jwtTokenUserInterceptor)
-                .addPathPatterns("/user/**")
-                .excludePathPatterns("/user/user/login")
-                .excludePathPatterns("/user/shop/status");
+//        log.info("开始注册user自定义拦截器...");
+//        registry.addInterceptor(jwtTokenUserInterceptor)
+//                .addPathPatterns("/user/**")
+//                .excludePathPatterns("/user/user/login")
+//                .excludePathPatterns("/user/shop/status");
     }
     /**
     * 使用mybatis plus 与pagehleper时需要加入下面的配置

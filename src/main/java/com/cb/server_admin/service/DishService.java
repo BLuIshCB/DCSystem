@@ -4,6 +4,7 @@ import com.cb.common.constant.MessageConstant;
 import com.cb.common.constant.StatusConstant;
 import com.cb.common.exception.DeletionNotAllowedException;
 import com.cb.common.result.PageResult;
+import com.cb.mapper.CategoryMapper;
 import com.cb.mapper.DishFlavorMapper;
 import com.cb.mapper.DishMapper;
 import com.cb.pojo.dto.DishDTO;
@@ -30,7 +31,8 @@ public class DishService  {
     private DishMapper dishMapper;
     @Autowired
     private DishFlavorMapper dishFlavorMapper;
-
+    @Autowired
+    private CategoryMapper categoryMapper;
 
     /**
      * 新增菜品和对应的口味
@@ -222,7 +224,9 @@ public class DishService  {
             //根据菜品id查询对应的口味
             List<DishFlavor> flavors = dishFlavorMapper.getByDishId(d.getId());
 
+            String name =categoryMapper.getName(d.getCategoryId());
             dishVO.setFlavors(flavors);
+            dishVO.setCategoryName(name);
             dishVOList.add(dishVO);
         }
 

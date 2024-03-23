@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,9 +33,9 @@ public class DishController {
      * @param categoryId
      * @return
      */
-    @GetMapping("/list")
+    @GetMapping("/list/{categoryId}")
     @ApiOperation("根据分类id查询菜品")
-    public Result<List<DishVO>> list(Long categoryId) {
+    public Result<List<DishVO>> list(@PathVariable Long categoryId) {
 
         //构造redis中的key，规则：dish_分类id
         String key = "dish_" + categoryId;
