@@ -1,81 +1,48 @@
 package com.cb.server_user.service;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.cb.common.constant.MessageConstant;
-import com.cb.common.exception.LoginFailedException;
-import com.cb.common.properties.WeChatProperties;
-import com.cb.common.utils.HttpClientUtil;
+import com.cb.common.utils.RandomCodeUtils;
+import com.cb.common.result.Result;
 import com.cb.mapper.UserMapper;
-import com.cb.pojo.dto.UserLoginDTO;
-import com.cb.pojo.entity.User;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
 public class UserService  {
 
-    //微信服务接口地址
-    public static final String WX_LOGIN = "https://api.weixin.qq.com/sns/jscode2session";
 
-    @Autowired
-    private WeChatProperties weChatProperties;
+
     @Autowired
     private UserMapper userMapper;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
-    /**
-     * 微信登录
-     * @param userLoginDTO
-     * @return
-     */
-    //todo 未测试
-    public User wxLogin(UserLoginDTO userLoginDTO) {
-        String openid = getOpenid(userLoginDTO.getCode());
+    public static final String LOGIN_CODE_KEY = "login:code:";
+    //验证码在redis里过期时间：2min
+    public static final Long LOGIN_CODE_TTL = 2L;
 
-        //判断openid是否为空，如果为空表示登录失败，抛出业务异常
-        if(openid == null){
-            throw new LoginFailedException(MessageConstant.LOGIN_FAILED);
-        }
+    public Result sendCode(String phone) {
+        // 1.校验手机号
+//        if (RegexUtils.isPhoneInvalid(phone)) {
+//            // 2.如果不符合，返回错误信息
+//            return Result.fail("手机号格式错误！");
+//        }
+        // 3.符合，生成验证码
+        String code = RandomCodeUtils.randomNumbers(6);
 
-        //判断当前用户是否为新用户
-        User user = userMapper.getByOpenid(openid);
+        // 4.保存验证码到 redis
+        stringRedisTemplate.opsForValue().set(LOGIN_CODE_KEY + phone, code, LOGIN_CODE_TTL, TimeUnit.MINUTES);
 
-        //如果是新用户，自动完成注册
-        if(user == null){
-            user = User.builder()
-                    .openid(openid)
-                    .createTime(LocalDateTime.now())
-                    .build();
-            userMapper.insert(user);
-        }
+        // 5.发送验证码
+        log.info("发送短信验证码成功，验证码：{}", code);
 
-        //返回这个用户对象
-        return user;
-    }
-
-    /**
-     * 调用微信接口服务，获取微信用户的openid
-     * @param code
-     * @return
-     */
-    //todo 未测试
-    private String getOpenid(String code){
-        //调用微信接口服务，获得当前微信用户的openid
-        Map<String, String> map = new HashMap<>();
-        map.put("appid",weChatProperties.getAppid());
-        map.put("secret",weChatProperties.getSecret());
-        map.put("js_code",code);
-        map.put("grant_type","authorization_code");
-        String json = HttpClientUtil.doGet(WX_LOGIN, map);
-
-        JSONObject jsonObject = JSON.parseObject(json);
-        String openid = jsonObject.getString("openid");
-        return openid;
+        // 返回ok
+        return Result.success("验证码已发送");
     }
 }
