@@ -31,30 +31,30 @@ public class UserController {
     @Autowired
     private JwtProperties jwtProperties;
 
-    /**
-     * 微信登录
-     * @param userLoginDTO
-     * @return
-     */
-    //todo 未测试
+
+//    @PostMapping("/login")
+//    @ApiOperation("微信登录")
+//    public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO){
+//        log.info("微信用户登录：{}",userLoginDTO.getCode());
+//
+//        //微信登录
+//        User user = userService.wxLogin(userLoginDTO);
+//
+//        //为微信用户生成jwt令牌
+//        Map<String, Object> claims = new HashMap<>();
+//        claims.put(JwtClaimsConstant.USER_ID,user.getId());
+//        String token = JwtUtil.createJWT(jwtProperties.getUserSecretKey(), jwtProperties.getUserTtl(), claims);
+//
+//        UserLoginVO userLoginVO = UserLoginVO.builder()
+//                .id(user.getId())
+//                .openid(user.getOpenid())
+//                .token(token)
+//                .build();
+//        return Result.success(userLoginVO);
+//    }
+
     @PostMapping("/login")
-    @ApiOperation("微信登录")
     public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO){
-        log.info("微信用户登录：{}",userLoginDTO.getCode());
-
-        //微信登录
-        User user = userService.wxLogin(userLoginDTO);
-
-        //为微信用户生成jwt令牌
-        Map<String, Object> claims = new HashMap<>();
-        claims.put(JwtClaimsConstant.USER_ID,user.getId());
-        String token = JwtUtil.createJWT(jwtProperties.getUserSecretKey(), jwtProperties.getUserTtl(), claims);
-
-        UserLoginVO userLoginVO = UserLoginVO.builder()
-                .id(user.getId())
-                .openid(user.getOpenid())
-                .token(token)
-                .build();
-        return Result.success(userLoginVO);
+     return null;
     }
 }
