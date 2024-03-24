@@ -1,5 +1,6 @@
 package com.cb.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cb.pojo.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -7,7 +8,7 @@ import org.apache.ibatis.annotations.Select;
 import java.util.Map;
 
 @Mapper
-public interface UserMapper {
+public interface UserMapper  {
 
     /**
      * 根据openid查询用户
@@ -17,6 +18,8 @@ public interface UserMapper {
     @Select("select * from user where openid = #{openid}")
     User getByOpenid(String openid);
 
+
+
     /**
      * 插入数据
      * @param user
@@ -25,6 +28,9 @@ public interface UserMapper {
 
     @Select("select * from user where id = #{id}")
     User getById(Long userId);
+
+    @Select("select * from user where phone = #{phone}")
+    User getByPhone(String phone);
 
     /**
      * 根据动态条件统计用户数量

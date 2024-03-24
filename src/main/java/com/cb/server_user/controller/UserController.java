@@ -26,8 +26,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private JwtProperties jwtProperties;
+
 
 
 //    @PostMapping("/login")
@@ -53,13 +52,11 @@ public class UserController {
 
     @GetMapping("/login/code")
     public Result code(@RequestParam("phone") String phone){
-
         // 发送短信验证码并保存验证码
         return userService.sendCode(phone);
     }
-//    @PostMapping("/login/phone")
-//    public Result login_phone(@RequestParam("code") String code){
-//
-//        return userService.sendCode(phone);
-//    }
+    @PostMapping("/login/phone")
+    public Result login_phone(@RequestBody UserLoginDTO userLoginDTO ){
+        return userService.loginbyPhone(userLoginDTO.getCode(),userLoginDTO.getPhone());
+    }
 }
