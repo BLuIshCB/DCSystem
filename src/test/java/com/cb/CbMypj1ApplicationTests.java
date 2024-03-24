@@ -52,10 +52,10 @@ class CbMypj1ApplicationTests {
 		d.setPage(1);
 		d.setPageSize(2);
 //		d.setName("test");
-		String a = "2a";
-		String b= "2b";
-		System.out.println(dishService.pageQuery(d));
-		redisTemplate.opsForValue().set(a,b);
+//		String a = "2a";
+//		String b= "2b";
+//		System.out.println(dishService.pageQuery(d));
+//		redisTemplate.opsForValue().set(a,b);
 	}
 	@Autowired
 	imageMapper imgMapper;
