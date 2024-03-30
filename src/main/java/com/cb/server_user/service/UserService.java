@@ -32,8 +32,8 @@ public class UserService {
     private JwtProperties jwtProperties;
 
     public static final String LOGIN_CODE_KEY = "login:code_";
-    //验证码在redis里过期时间：2min
-    public static final Long LOGIN_CODE_TTL = 2L;
+    //验证码在redis里过期时间：1min
+    public static final Long LOGIN_CODE_TTL = 1L;
 
         public Result register (UserRegisterDTO userRegisterDTO){
         String name = userRegisterDTO.getName();
@@ -67,6 +67,10 @@ public class UserService {
         User user = userMapper.getByPhone(phone);
         if (user == null) {
             return Result.error("该手机号没有注册");
+        }
+        //查询是否发过短信
+        if ( stringRedisTemplate.opsForValue().get(LOGIN_CODE_KEY + phone)!=null) {
+            return Result.error("不要重复发送短信");
         }
         // 3.符合，生成验证码
         String code = RandomCodeUtils.randomNumbers(6);
