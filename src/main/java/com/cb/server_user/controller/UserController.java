@@ -43,7 +43,7 @@ public class UserController {
 
         return userService.register(userRegisterDTO);
     }
-    @GetMapping("/login/code")
+    @GetMapping("/sendCode")
     public Result code(@RequestParam("phone") String phone){
         // 发送短信验证码并保存验证码
         if (phone == null){

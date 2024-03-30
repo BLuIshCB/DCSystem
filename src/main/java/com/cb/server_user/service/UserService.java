@@ -106,6 +106,7 @@ public class UserService {
                 .id(user.getId())
                 .name(user.getName())
                 .token(token).build();
-        return Result.success("登录成功", userLoginVO);
+        System.out.println(userLoginVO);
+        return Result.success(userLoginVO);
     }
 }
