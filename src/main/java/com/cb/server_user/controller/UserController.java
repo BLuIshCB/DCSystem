@@ -5,6 +5,7 @@ import com.cb.common.properties.JwtProperties;
 import com.cb.common.result.Result;
 import com.cb.common.utils.JwtUtil;
 import com.cb.pojo.dto.UserLoginDTO;
+import com.cb.pojo.dto.UserRegisterDTO;
 import com.cb.pojo.entity.User;
 import com.cb.pojo.vo.UserLoginVO;
 import com.cb.server_user.service.UserService;
@@ -27,36 +28,38 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/checkName")
+    public Result checkName(String name){
+        log.info("name{}",name);
+        if (userService.cheackName(name)){
+            return Result.success("名称可用");
+        }else {
+            return Result.error("名称不可用");
+        }
+    }
 
+    @PostMapping("/register")
+    public Result register(@RequestBody UserRegisterDTO userRegisterDTO ){
 
-//    @PostMapping("/login")
-//    @ApiOperation("微信登录")
-//    public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO){
-//        log.info("微信用户登录：{}",userLoginDTO.getCode());
-//
-//        //微信登录
-//        User user = userService.wxLogin(userLoginDTO);
-//
-//        //为微信用户生成jwt令牌
-//        Map<String, Object> claims = new HashMap<>();
-//        claims.put(JwtClaimsConstant.USER_ID,user.getId());
-//        String token = JwtUtil.createJWT(jwtProperties.getUserSecretKey(), jwtProperties.getUserTtl(), claims);
-//
-//        UserLoginVO userLoginVO = UserLoginVO.builder()
-//                .id(user.getId())
-//                .openid(user.getOpenid())
-//                .token(token)
-//                .build();
-//        return Result.success(userLoginVO);
-//    }
-
+        return userService.register(userRegisterDTO);
+    }
     @GetMapping("/login/code")
     public Result code(@RequestParam("phone") String phone){
         // 发送短信验证码并保存验证码
+        if (phone == null){
+            return Result.error("手机号不能为空");
+        }
         return userService.sendCode(phone);
     }
     @PostMapping("/login/phone")
     public Result login_phone(@RequestBody UserLoginDTO userLoginDTO ){
+        if (userLoginDTO.getPhone() == null){
+            return Result.error("手机号不能为空");
+        }
+        if (userLoginDTO.getCode() == null){
+            return Result.error("验证码不能为空");
+        }
         return userService.loginbyPhone(userLoginDTO.getCode(),userLoginDTO.getPhone());
     }
+
 }

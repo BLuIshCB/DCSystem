@@ -2,6 +2,7 @@ package com.cb.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cb.pojo.entity.User;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -10,15 +11,12 @@ import java.util.Map;
 @Mapper
 public interface UserMapper  {
 
-    /**
-     * 根据openid查询用户
-     * @param openid
-     * @return
-     */
-    @Select("select * from user where openid = #{openid}")
-    User getByOpenid(String openid);
 
+    @Select("select * from user where name = #{name}")
+    User getByName(String name);
 
+//    @Insert("insert into user values")
+//    int registerUser()
 
     /**
      * 插入数据

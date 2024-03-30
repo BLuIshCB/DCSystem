@@ -4,8 +4,8 @@
 <mapper namespace="com.cb.mapper.UserMapper">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        insert into user (openid, name, phone, sex, avatar, create_time)
-        values (#{openid}, #{name}, #{phone}, #{sex}, #{avatar}, #{createTime})
+        insert into user ( name, phone, sex, avatar, create_time)
+        values ( #{name}, #{phone}, #{sex}, #{avatar}, #{createTime})
     </insert>
 
     <select id="countByMap" resultType="java.lang.Integer">
