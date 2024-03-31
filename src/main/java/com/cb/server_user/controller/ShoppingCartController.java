@@ -3,6 +3,7 @@ package com.cb.server_user.controller;
 
 import com.cb.common.result.Result;
 import com.cb.pojo.dto.ShoppingCartDTO;
+import com.cb.pojo.entity.ShoppingCart;
 import com.cb.server_user.service.ShoppingCartService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,41 +32,41 @@ public class ShoppingCartController {
     public Result add(@RequestBody ShoppingCartDTO shoppingCartDTO){
         log.info("添加购物车，商品信息为：{}",shoppingCartDTO);
         shoppingCartService.addShoppingCart(shoppingCartDTO);
+        return Result.success("添加成功");
+    }
+
+    /**
+     * 查看购物车
+     * @return
+     */
+    @GetMapping("/list")
+    @ApiOperation("查看购物车")
+    public Result<List<ShoppingCart>> list(){
+        List<ShoppingCart> list = shoppingCartService.showShoppingCart();
+        return Result.success(list);
+    }
+
+    /**
+     * 清空购物车
+     * @return
+     */
+    @DeleteMapping("/clean")
+    @ApiOperation("清空购物车")
+    public Result clean(){
+        shoppingCartService.cleanShoppingCart();
         return Result.success();
     }
 
-//    /**
-//     * 查看购物车
-//     * @return
-//     */
-//    @GetMapping("/list")
-//    @ApiOperation("查看购物车")
-//    public Result<List<ShoppingCart>> list(){
-//        List<ShoppingCart> list = shoppingCartService.showShoppingCart();
-//        return Result.success(list);
-//    }
-//
-//    /**
-//     * 清空购物车
-//     * @return
-//     */
-//    @DeleteMapping("/clean")
-//    @ApiOperation("清空购物车")
-//    public Result clean(){
-//        shoppingCartService.cleanShoppingCart();
-//        return Result.success();
-//    }
-//
-//    /**
-//     * 删除购物车中一个商品
-//     * @param shoppingCartDTO
-//     * @return
-//     */
-//    @PostMapping("/sub")
-//    @ApiOperation("删除购物车中一个商品")
-//    public Result sub(@RequestBody ShoppingCartDTO shoppingCartDTO){
-//        log.info("删除购物车中一个商品，商品：{}", shoppingCartDTO);
-//        shoppingCartService.subShoppingCart(shoppingCartDTO);
-//        return Result.success();
-//    }
+    /**
+     * 删除购物车中一个商品
+     * @param shoppingCartDTO
+     * @return
+     */
+    @PostMapping("/sub")
+    @ApiOperation("删除购物车中一个商品")
+    public Result sub(@RequestBody ShoppingCartDTO shoppingCartDTO){
+        log.info("删除购物车中一个商品，商品：{}", shoppingCartDTO);
+        shoppingCartService.subShoppingCart(shoppingCartDTO);
+        return Result.success();
+    }
 }

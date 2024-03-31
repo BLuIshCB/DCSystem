@@ -105,8 +105,7 @@ public class UserService {
         UserLoginVO userLoginVO = UserLoginVO.builder()
                 .id(user.getId())
                 .name(user.getName())
-                .token(token).build();
-        System.out.println(userLoginVO);
+                .authentication(token).build();
         return Result.success(userLoginVO);
     }
 }
