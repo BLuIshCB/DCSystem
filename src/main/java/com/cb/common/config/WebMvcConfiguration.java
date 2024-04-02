@@ -50,6 +50,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         registry.addInterceptor(jwtTokenUserInterceptor)
                 .addPathPatterns("/user/**")
                 .excludePathPatterns("/user/user/**")
+                .excludePathPatterns("/user/query/**")
                 .excludePathPatterns("/user/shop/status");
     }
     /**
@@ -69,26 +70,26 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     /**
     *   接口文档生成的配置
     * */
-    @Bean
-    public Docket docket1(){
-        log.info("准备生成管理端接口文档...");
-        ApiInfo apiInfo = new ApiInfoBuilder()
-                .title("CBPJ项目管理端接口文档")
-                .version("2.0")
-                .description("CBPJ项目管理端接口文档")
-                .build();
-
-        Docket docket = new Docket(DocumentationType.SWAGGER_2)
-                .groupName("管理端接口")
-                .apiInfo(apiInfo)
-                .select()
-                //指定生成接口需要扫描的包
-                .apis(RequestHandlerSelectors.basePackage("com.cb.system.controller"))
-                .paths(PathSelectors.any())
-                .build();
-
-        return docket;
-    }
+//    @Bean
+//    public Docket docket1(){
+//        log.info("准备生成管理端接口文档...");
+//        ApiInfo apiInfo = new ApiInfoBuilder()
+//                .title("CBPJ项目管理端接口文档")
+//                .version("2.0")
+//                .description("CBPJ项目管理端接口文档")
+//                .build();
+//
+//        Docket docket = new Docket(DocumentationType.SWAGGER_2)
+//                .groupName("管理端接口")
+//                .apiInfo(apiInfo)
+//                .select()
+//                //指定生成接口需要扫描的包
+//                .apis(RequestHandlerSelectors.basePackage("com.cb.system.controller"))
+//                .paths(PathSelectors.any())
+//                .build();
+//
+//        return docket;
+//    }
     /**
      *   接口文档生成的配置
      * */

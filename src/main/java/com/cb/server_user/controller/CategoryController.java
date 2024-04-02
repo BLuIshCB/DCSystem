@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController("userCategoryController")
-@RequestMapping("/user/category")
+@RequestMapping("/user/query/category")
 @Api(tags = "C端-分类接口")
 public class CategoryController {
 
