@@ -9,10 +9,7 @@ import com.cb.common.exception.AddressBookBusinessException;
 import com.cb.common.exception.ShoppingCartBusinessException;
 import com.cb.mapper.*;
 import com.cb.pojo.dto.OrdersSubmitDTO;
-import com.cb.pojo.entity.AddressBook;
-import com.cb.pojo.entity.OrderDetail;
-import com.cb.pojo.entity.Orders;
-import com.cb.pojo.entity.ShoppingCart;
+import com.cb.pojo.entity.*;
 import com.cb.pojo.vo.OrderSubmitVO;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -47,6 +44,8 @@ public class OrderService  {
     private ShoppingCartMapper shoppingCartMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private DishMapper dishMapper;
 //    @Autowired
 //    private WeChatPayUtil weChatPayUtil;
 //    @Autowired
@@ -59,7 +58,7 @@ public class OrderService  {
      */
     @Transactional
     public OrderSubmitVO submitOrder(OrdersSubmitDTO ordersSubmitDTO) {
-
+        BigDecimal amounttp = new BigDecimal("0");
         //1. 处理各种业务异常（地址簿为空、购物车数据为空）
         AddressBook addressBook = addressBookMapper.getById(ordersSubmitDTO.getAddressBookId());
         if(addressBook == null){
@@ -96,17 +95,32 @@ public class OrderService  {
         //todo amount为空 ，这里amount应该由后端计算
         orderMapper.insert(orders);
 
+
         List<OrderDetail> orderDetailList = new ArrayList<>();
         //3. 向订单明细表插入n条数据
         for (ShoppingCart cart : shoppingCartList) {
             OrderDetail orderDetail = new OrderDetail();//订单明细
             BeanUtils.copyProperties(cart, orderDetail);
+
+            //计算金额
+            BigDecimal numtp = new BigDecimal(cart.getNumber().toString());
+            Dish dish = dishMapper.getById(cart.getDishId());
+            amounttp =amounttp.add(numtp.multiply(dish.getPrice()));
+
             orderDetail.setOrderId(orders.getId());//设置当前订单明细关联的订单id
+            orderDetail.setAmount(numtp.multiply(dish.getPrice()));
+            System.out.println(orderDetail);
             orderDetailList.add(orderDetail);
+
         }
+        log.info("{}",orderDetailList);
 
+        //设置金额为计算过的金额
+        orders.setAmount(amounttp);
+
+
+        orderMapper.update(orders);
         orderDetailMapper.insertBatch(orderDetailList);
-
         //4. 清空当前用户的购物车数据
         shoppingCartMapper.deleteByUserId(userId);
 
@@ -120,77 +134,7 @@ public class OrderService  {
 
         return orderSubmitVO;
     }
-//
-//    @Value("${sky.shop.address}")
-//    private String shopAddress;
-//
-//    @Value("${sky.baidu.ak}")
-//    private String ak;
-//
-//    /**
-//     * 检查客户的收货地址是否超出配送范围
-//     * @param address
-//     */
-//    private void checkOutOfRange(String address) {
-//        Map map = new HashMap();
-//        map.put("address",shopAddress);
-//        map.put("output","json");
-//        map.put("ak",ak);
-//
-//        //获取店铺的经纬度坐标
-//        String shopCoordinate = HttpClientUtil.doGet("https://api.map.baidu.com/geocoding/v3", map);
-//
-//        JSONObject jsonObject = JSON.parseObject(shopCoordinate);
-//        if(!jsonObject.getString("status").equals("0")){
-//            throw new OrderBusinessException("店铺地址解析失败");
-//        }
-//
-//        //数据解析
-//        JSONObject location = jsonObject.getJSONObject("result").getJSONObject("location");
-//        String lat = location.getString("lat");
-//        String lng = location.getString("lng");
-//        //店铺经纬度坐标
-//        String shopLngLat = lat + "," + lng;
-//
-//        map.put("address",address);
-//        //获取用户收货地址的经纬度坐标
-//        String userCoordinate = HttpClientUtil.doGet("https://api.map.baidu.com/geocoding/v3", map);
-//
-//        jsonObject = JSON.parseObject(userCoordinate);
-//        if(!jsonObject.getString("status").equals("0")){
-//            throw new OrderBusinessException("收货地址解析失败");
-//        }
-//
-//        //数据解析
-//        location = jsonObject.getJSONObject("result").getJSONObject("location");
-//        lat = location.getString("lat");
-//        lng = location.getString("lng");
-//        //用户收货地址经纬度坐标
-//        String userLngLat = lat + "," + lng;
-//
-//        map.put("origin",shopLngLat);
-//        map.put("destination",userLngLat);
-//        map.put("steps_info","0");
-//
-//        //路线规划
-//        String json = HttpClientUtil.doGet("https://api.map.baidu.com/directionlite/v1/driving", map);
-//
-//        jsonObject = JSON.parseObject(json);
-//        if(!jsonObject.getString("status").equals("0")){
-//            throw new OrderBusinessException("配送路线规划失败");
-//        }
-//
-//        //数据解析
-//        JSONObject result = jsonObject.getJSONObject("result");
-//        JSONArray jsonArray = (JSONArray) result.get("routes");
-//        Integer distance = (Integer) ((JSONObject) jsonArray.get(0)).get("distance");
-//
-//        if(distance > 5000){
-//            //配送距离超过5000米
-//            throw new OrderBusinessException("超出配送范围");
-//        }
-//    }
-//
+
 //    /**
 //     * 订单支付
 //     *
