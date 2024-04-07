@@ -5,6 +5,7 @@ import com.cb.common.result.PageResult;
 import com.cb.common.result.Result;
 import com.cb.pojo.dto.OrdersSubmitDTO;
 import com.cb.pojo.vo.OrderSubmitVO;
+import com.cb.pojo.vo.OrderVO;
 import com.cb.server_user.service.OrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -63,20 +64,20 @@ public class OrderController {
         PageResult pageResult = orderService.pageQuery4User(page, pageSize, status);
         return Result.success(pageResult);
     }
-//
-//    /**
-//     * 查询订单详情
-//     *
-//     * @param id
-//     * @return
-//     */
-//    @GetMapping("/orderDetail/{id}")
-//    @ApiOperation("查询订单详情")
-//    public Result<OrderVO> details(@PathVariable("id") Long id) {
-//        OrderVO orderVO = orderService.details(id);
-//        return Result.success(orderVO);
-//    }
-//
+
+    /**
+     * 查询订单详情
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/orderDetail/{id}")
+    @ApiOperation("查询订单详情")
+    public Result<OrderVO> details(@PathVariable("id") Long id) {
+        OrderVO orderVO = orderService.details(id);
+        return Result.success(orderVO);
+    }
+
 //    /**
 //     * 用户取消订单
 //     *
@@ -88,7 +89,7 @@ public class OrderController {
 //        orderService.userCancelById(id);
 //        return Result.success();
 //    }
-//
+
 //    /**
 //     * 再来一单
 //     *

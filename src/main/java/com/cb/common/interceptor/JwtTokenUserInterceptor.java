@@ -68,7 +68,7 @@ public class JwtTokenUserInterceptor implements HandlerInterceptor {
 
         //1、从请求头中获取令牌
         String token = request.getHeader(jwtProperties.getUserTokenName());
-        log.info("token{}",token);
+//        log.info("token{}",token);
         //2、校验令牌
         try {
             Claims claims = JwtUtil.parseJWT(jwtProperties.getUserSecretKey(), token);
@@ -78,7 +78,7 @@ public class JwtTokenUserInterceptor implements HandlerInterceptor {
             return true;
         } catch (Exception ex) {
             //4、不通过，响应401状态码
-            log.info("JWT校验不通过");
+            log.warn("JWT校验不通过");
             response.setStatus(401);
             return false;
         }

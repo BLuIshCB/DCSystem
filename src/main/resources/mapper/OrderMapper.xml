@@ -16,6 +16,9 @@
     <update id="update" parameterType="com.cb.pojo.entity.Orders">
         update orders
         <set>
+            <if test="amount != null and amount != '' ">
+                amount = #{amount},
+            </if>
             <if test="cancelReason != null and cancelReason!='' ">
                 cancel_reason=#{cancelReason},
             </if>

@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.cb.common.constant.MessageConstant;
 import com.cb.common.context.BaseContext;
 import com.cb.common.exception.AddressBookBusinessException;
+import com.cb.common.exception.OrderBusinessException;
 import com.cb.common.exception.ShoppingCartBusinessException;
 import com.cb.common.result.PageResult;
 import com.cb.mapper.*;
@@ -95,7 +96,6 @@ public class OrderService  {
         orders.setPhone(addressBook.getPhone());
         orders.setConsignee(addressBook.getConsignee());
         orders.setUserId(userId);
-        //todo amount为空 ，这里amount应该由后端计算
         orderMapper.insert(orders);
 
 
@@ -237,32 +237,35 @@ public class OrderService  {
         return new PageResult(page.getTotal(), list);
     }
 
-//    /**
-//     * 查询订单详情
-//     *
-//     * @param id
-//     * @return
-//     */
-//    public OrderVO details(Long id) {
-//        // 根据id查询订单
-//        Orders orders = orderMapper.getById(id);
-//
-//        // 查询该订单对应的菜品/套餐明细
-//        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());
-//
-//        // 将该订单及其详情封装到OrderVO并返回
-//        OrderVO orderVO = new OrderVO();
-//        BeanUtils.copyProperties(orders, orderVO);
-//        orderVO.setOrderDetailList(orderDetailList);
-//
-//        return orderVO;
-//    }
-//
-//    /**
-//     * 用户取消订单
-//     *
-//     * @param id
-//     */
+    /**
+     * 查询订单详情
+     *
+     * @param id
+     * @return
+     */
+    public OrderVO details(Long id) {
+        // 根据id查询订单
+        Orders orders = orderMapper.getById(id);
+
+        if (orders == null){
+            return null;
+        }
+        // 查询该订单对应的菜品/套餐明细
+        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());
+
+        // 将该订单及其详情封装到OrderVO并返回
+        OrderVO orderVO = new OrderVO();
+        BeanUtils.copyProperties(orders, orderVO);
+        orderVO.setOrderDetailList(orderDetailList);
+
+        return orderVO;
+    }
+
+    /**
+     * 用户取消订单
+     *
+     * @param id
+     */
 //    public void userCancelById(Long id) throws Exception {
 //        // 根据id查询订单
 //        Orders ordersDB = orderMapper.getById(id);
@@ -299,7 +302,7 @@ public class OrderService  {
 //        orders.setCancelTime(LocalDateTime.now());
 //        orderMapper.update(orders);
 //    }
-//
+
 //    /**
 //     * 再来一单
 //     *
