@@ -7,10 +7,13 @@ import com.cb.common.constant.MessageConstant;
 import com.cb.common.context.BaseContext;
 import com.cb.common.exception.AddressBookBusinessException;
 import com.cb.common.exception.ShoppingCartBusinessException;
+import com.cb.common.result.PageResult;
 import com.cb.mapper.*;
 import com.cb.pojo.dto.OrdersSubmitDTO;
 import com.cb.pojo.entity.*;
+import com.cb.pojo.page.OrdersPageQueryDTO;
 import com.cb.pojo.vo.OrderSubmitVO;
+import com.cb.pojo.vo.OrderVO;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
@@ -109,7 +112,6 @@ public class OrderService  {
 
             orderDetail.setOrderId(orders.getId());//设置当前订单明细关联的订单id
             orderDetail.setAmount(numtp.multiply(dish.getPrice()));
-            System.out.println(orderDetail);
             orderDetailList.add(orderDetail);
 
         }
@@ -118,7 +120,7 @@ public class OrderService  {
         //设置金额为计算过的金额
         orders.setAmount(amounttp);
 
-
+        System.out.println(orders);
         orderMapper.update(orders);
         orderDetailMapper.insertBatch(orderDetailList);
         //4. 清空当前用户的购物车数据
@@ -195,46 +197,46 @@ public class OrderService  {
 //        String json = JSON.toJSONString(map);
 //        webSocketServer.sendToAllClient(json);
 //    }
-//
-//    /**
-//     * 用户端订单分页查询
-//     *
-//     * @param pageNum
-//     * @param pageSize
-//     * @param status
-//     * @return
-//     */
-//    public PageResult pageQuery4User(int pageNum, int pageSize, Integer status) {
-//        // 设置分页
-//        PageHelper.startPage(pageNum, pageSize);
-//
-//        OrdersPageQueryDTO ordersPageQueryDTO = new OrdersPageQueryDTO();
-//        ordersPageQueryDTO.setUserId(BaseContext.getCurrentId());
-//        ordersPageQueryDTO.setStatus(status);
-//
-//        // 分页条件查询
-//        Page<Orders> page = orderMapper.pageQuery(ordersPageQueryDTO);
-//
-//        List<OrderVO> list = new ArrayList();
-//
-//        // 查询出订单明细，并封装入OrderVO进行响应
-//        if (page != null && page.getTotal() > 0) {
-//            for (Orders orders : page) {
-//                Long orderId = orders.getId();// 订单id
-//
-//                // 查询订单明细
-//                List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(orderId);
-//
-//                OrderVO orderVO = new OrderVO();
-//                BeanUtils.copyProperties(orders, orderVO);
-//                orderVO.setOrderDetailList(orderDetails);
-//
-//                list.add(orderVO);
-//            }
-//        }
-//        return new PageResult(page.getTotal(), list);
-//    }
-//
+
+    /**
+     * 用户端订单分页查询
+     *
+     * @param pageNum
+     * @param pageSize
+     * @param status
+     * @return
+     */
+    public PageResult pageQuery4User(int pageNum, int pageSize, Integer status) {
+        // 设置分页
+        PageHelper.startPage(pageNum, pageSize);
+
+        OrdersPageQueryDTO ordersPageQueryDTO = new OrdersPageQueryDTO();
+        ordersPageQueryDTO.setUserId(BaseContext.getCurrentId());
+        ordersPageQueryDTO.setStatus(status);
+
+        // 分页条件查询
+        Page<Orders> page = orderMapper.pageQuery(ordersPageQueryDTO);
+
+        List<OrderVO> list = new ArrayList();
+
+        // 查询出订单明细，并封装入OrderVO进行响应
+        if (page != null && page.getTotal() > 0) {
+            for (Orders orders : page) {
+                Long orderId = orders.getId();// 订单id
+
+                // 查询订单明细
+                List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(orderId);
+
+                OrderVO orderVO = new OrderVO();
+                BeanUtils.copyProperties(orders, orderVO);
+                orderVO.setOrderDetailList(orderDetails);
+
+                list.add(orderVO);
+            }
+        }
+        return new PageResult(page.getTotal(), list);
+    }
+
 //    /**
 //     * 查询订单详情
 //     *

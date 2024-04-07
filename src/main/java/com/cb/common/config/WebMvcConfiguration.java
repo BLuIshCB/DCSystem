@@ -5,11 +5,15 @@ import com.cb.common.interceptor.JwtTokenUserInterceptor;
 import com.cb.common.utils.JacksonObjectMapper;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.filters.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsWebFilter;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.*;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -67,6 +71,30 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         pageHelper.setProperties(properties);
         return pageHelper;
     }
+    //允许垮域
+    @Bean
+    public CorsWebFilter corsWebFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        // 配置跨域
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        // 允许哪个请求头
+        corsConfiguration.addAllowedHeader("*");
+        // 允许哪个方法进行跨域
+        corsConfiguration.addAllowedMethod("*");
+        // 允许哪个请求来源进行跨域
+        // corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.addAllowedOriginPattern("*");
+        // 是否允许携带cookie进行跨域
+        corsConfiguration.setAllowCredentials(true);
+
+        source.registerCorsConfiguration("/**",corsConfiguration);
+        return new CorsWebFilter(source);
+    }
+
+
+
+
+
     /**
     *   接口文档生成的配置
     * */
