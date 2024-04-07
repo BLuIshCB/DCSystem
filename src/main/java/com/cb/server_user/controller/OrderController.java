@@ -34,22 +34,24 @@ public class OrderController {
         OrderSubmitVO orderSubmitVO = orderService.submitOrder(ordersSubmitDTO);
         return Result.success(orderSubmitVO);
     }
-//
-//    /**
-//     * 订单支付
-//     *
-//     * @param ordersPaymentDTO
-//     * @return
-//     */
-//    @PutMapping("/payment")
-//    @ApiOperation("订单支付")
-//    public Result<OrderPaymentVO> payment(@RequestBody OrdersPaymentDTO ordersPaymentDTO) throws Exception {
-//        log.info("订单支付：{}", ordersPaymentDTO);
-//        OrderPaymentVO orderPaymentVO = orderService.payment(ordersPaymentDTO);
-//        log.info("生成预支付交易单：{}", orderPaymentVO);
-//        return Result.success(orderPaymentVO);
-//    }
-//
+
+
+
+
+    /**
+     *  模拟订单支付
+     *
+     * @return
+     */
+    @PutMapping("/pay/{id}")
+    @ApiOperation("订单支付")
+    public Result payment(@PathVariable long id) throws Exception {
+        log.info("----模拟订单支付,订单id为：{}-----", id);
+        orderService.pay(id);
+        return Result.success("支付成功");
+    }
+
+
     /**
      * 历史订单查询
      *
@@ -78,17 +80,17 @@ public class OrderController {
         return Result.success(orderVO);
     }
 
-//    /**
-//     * 用户取消订单
-//     *
-//     * @return
-//     */
-//    @PutMapping("/cancel/{id}")
-//    @ApiOperation("取消订单")
-//    public Result cancel(@PathVariable("id") Long id) throws Exception {
-//        orderService.userCancelById(id);
-//        return Result.success();
-//    }
+    /**
+     * 用户取消订单
+     *
+     * @return
+     */
+    @PutMapping("/cancel/{id}")
+    @ApiOperation("取消订单")
+    public Result cancel(@PathVariable("id") Long id) throws Exception {
+        orderService.userCancelById(id);
+        return Result.success();
+    }
 
 //    /**
 //     * 再来一单
@@ -113,5 +115,20 @@ public class OrderController {
 //    public Result reminder(@PathVariable("id") Long id){
 //        orderService.reminder(id);
 //        return Result.success();
+//    }
+
+    //    /**
+//     * 订单支付
+//     *
+//     * @param ordersPaymentDTO
+//     * @return
+//     */
+//    @PutMapping("/payment")
+//    @ApiOperation("订单支付")
+//    public Result<OrderPaymentVO> payment(@RequestBody OrdersPaymentDTO ordersPaymentDTO) throws Exception {
+//        log.info("订单支付：{}", ordersPaymentDTO);
+//        OrderPaymentVO orderPaymentVO = orderService.payment(ordersPaymentDTO);
+//        log.info("生成预支付交易单：{}", orderPaymentVO);
+//        return Result.success(orderPaymentVO);
 //    }
 }

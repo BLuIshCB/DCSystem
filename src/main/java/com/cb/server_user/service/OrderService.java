@@ -137,34 +137,20 @@ public class OrderService  {
         return orderSubmitVO;
     }
 
-//    /**
-//     * 订单支付
-//     *
-//     * @param ordersPaymentDTO
-//     * @return
-//     */
-//    public OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) throws Exception {
-//        // 当前登录用户id
-//        Long userId = BaseContext.getCurrentId();
-//        User user = userMapper.getById(userId);
-//
-//        //调用微信支付接口，生成预支付交易单
-//        JSONObject jsonObject = weChatPayUtil.pay(
-//                ordersPaymentDTO.getOrderNumber(), //商户订单号
-//                new BigDecimal(0.01), //支付金额，单位 元
-//                "苍穹外卖订单", //商品描述
-//                user.getOpenid() //微信用户的openid
-//        );
-//
-//        if (jsonObject.getString("code") != null && jsonObject.getString("code").equals("ORDERPAID")) {
-//            throw new OrderBusinessException("该订单已支付");
-//        }
-//
-//        OrderPaymentVO vo = jsonObject.toJavaObject(OrderPaymentVO.class);
-//        vo.setPackageStr(jsonObject.getString("package"));
-//
-//        return vo;
-//    }
+
+
+    /**
+     * 模拟订单支付
+     *
+     */
+    public void pay(long id) throws Exception {
+        // 当前登录用户id
+        Orders orders = orderMapper.getById(id);
+        orders.setPayStatus(orders.PAID);
+        orders.setStatus(orders.TO_BE_CONFIRMED);
+        orderMapper.update(orders);
+
+    }
 //
 //    /**
 //     * 支付成功，修改订单状态
@@ -248,7 +234,7 @@ public class OrderService  {
         Orders orders = orderMapper.getById(id);
 
         if (orders == null){
-            return null;
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
         }
         // 查询该订单对应的菜品/套餐明细
         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());
@@ -266,25 +252,25 @@ public class OrderService  {
      *
      * @param id
      */
-//    public void userCancelById(Long id) throws Exception {
-//        // 根据id查询订单
-//        Orders ordersDB = orderMapper.getById(id);
-//
-//        // 校验订单是否存在
-//        if (ordersDB == null) {
-//            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
-//        }
-//
-//        //订单状态 1待付款 2待接单 3已接单 4派送中 5已完成 6已取消
-//        if (ordersDB.getStatus() > 2) {
-//            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
-//        }
-//
-//        Orders orders = new Orders();
-//        orders.setId(ordersDB.getId());
-//
-//        // 订单处于待接单状态下取消，需要进行退款
-//        if (ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {
+    public void userCancelById(Long id) throws Exception {
+        // 根据id查询订单
+        Orders ordersDB = orderMapper.getById(id);
+
+        // 校验订单是否存在
+        if (ordersDB == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+
+        //订单状态 1待付款 2待接单 3已接单 4派送中 5已完成 6已取消
+        if (ordersDB.getStatus() > 2) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
+        Orders orders = new Orders();
+        orders.setId(ordersDB.getId());
+
+        // 订单处于待接单状态下取消，需要进行退款
+        if (ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {
 //            //调用微信支付退款接口
 //            weChatPayUtil.refund(
 //                    ordersDB.getNumber(), //商户订单号
@@ -292,16 +278,17 @@ public class OrderService  {
 //                    new BigDecimal(0.01),//退款金额，单位 元
 //                    new BigDecimal(0.01));//原订单金额
 //
-//            //支付状态修改为 退款
-//            orders.setPayStatus(Orders.REFUND);
-//        }
-//
-//        // 更新订单状态、取消原因、取消时间
-//        orders.setStatus(Orders.CANCELLED);
-//        orders.setCancelReason("用户取消");
-//        orders.setCancelTime(LocalDateTime.now());
-//        orderMapper.update(orders);
-//    }
+            log.info("----模拟退款----");
+            //支付状态修改为 退款
+            orders.setPayStatus(Orders.REFUND);
+        }
+
+        // 更新订单状态、取消原因、取消时间
+        orders.setStatus(Orders.CANCELLED);
+        orders.setCancelReason("用户取消");
+        orders.setCancelTime(LocalDateTime.now());
+        orderMapper.update(orders);
+    }
 
 //    /**
 //     * 再来一单
@@ -552,5 +539,35 @@ public class OrderService  {
 //
 //        //通过websocket向客户端浏览器推送消息
 //        webSocketServer.sendToAllClient(JSON.toJSONString(map));
+//    }
+
+
+//    /**
+//     * 订单支付
+//     *
+//     * @param ordersPaymentDTO
+//     * @return
+//     */
+//    public OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) throws Exception {
+//        // 当前登录用户id
+//        Long userId = BaseContext.getCurrentId();
+//        User user = userMapper.getById(userId);
+//
+//        //调用微信支付接口，生成预支付交易单
+//        JSONObject jsonObject = weChatPayUtil.pay(
+//                ordersPaymentDTO.getOrderNumber(), //商户订单号
+//                new BigDecimal(0.01), //支付金额，单位 元
+//                "苍穹外卖订单", //商品描述
+//                user.getOpenid() //微信用户的openid
+//        );
+//
+//        if (jsonObject.getString("code") != null && jsonObject.getString("code").equals("ORDERPAID")) {
+//            throw new OrderBusinessException("该订单已支付");
+//        }
+//
+//        OrderPaymentVO vo = jsonObject.toJavaObject(OrderPaymentVO.class);
+//        vo.setPackageStr(jsonObject.getString("package"));
+//
+//        return vo;
 //    }
 }
