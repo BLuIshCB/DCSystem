@@ -43,6 +43,7 @@ public class OrderController {
      *
      * @return
      */
+    //id为订单号
     @PutMapping("/pay/{id}")
     @ApiOperation("订单支付")
     public Result payment(@PathVariable long id) throws Exception {

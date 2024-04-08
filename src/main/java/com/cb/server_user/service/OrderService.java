@@ -9,6 +9,7 @@ import com.cb.common.exception.AddressBookBusinessException;
 import com.cb.common.exception.OrderBusinessException;
 import com.cb.common.exception.ShoppingCartBusinessException;
 import com.cb.common.result.PageResult;
+import com.cb.common.websocket.WebSocketServer;
 import com.cb.mapper.*;
 import com.cb.pojo.dto.OrdersSubmitDTO;
 import com.cb.pojo.entity.*;
@@ -50,10 +51,8 @@ public class OrderService  {
     private UserMapper userMapper;
     @Autowired
     private DishMapper dishMapper;
-//    @Autowired
-//    private WeChatPayUtil weChatPayUtil;
-//    @Autowired
-//    private WebSocketServer webSocketServer;
+    @Autowired
+    private WebSocketServer webSocketServer;
 
     /**
      * 用户下单
@@ -145,11 +144,21 @@ public class OrderService  {
      */
     public void pay(long id) throws Exception {
         // 当前登录用户id
+
+
         Orders orders = orderMapper.getById(id);
         orders.setPayStatus(orders.PAID);
         orders.setStatus(orders.TO_BE_CONFIRMED);
         orderMapper.update(orders);
 
+        //通过websocket向客户端浏览器推送消息 type orderId content
+        Map map = new HashMap();
+        map.put("type",1); // 1表示来单提醒 2表示客户催单
+        map.put("orderId",orders.getId());
+        map.put("msg","您有一个新的订单，请及时处理");
+
+        String json = JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(json);
     }
 //
 //    /**
