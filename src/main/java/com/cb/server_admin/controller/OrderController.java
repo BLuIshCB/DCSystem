@@ -1,23 +1,24 @@
-//package com.cb.server_admin.controller;
-//
-//import io.swagger.annotations.Api;
-//import io.swagger.annotations.ApiOperation;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.web.bind.annotation.*;
-//
-///**
-// * 订单管理
-// */
-//@RestController("adminOrderController")
-//@RequestMapping("/admin/order")
-//@Slf4j
-//@Api(tags = "订单管理接口")
-//public class OrderController {
-//
-//    @Autowired
-//    private OrderService orderService;
-//
+package com.cb.server_admin.controller;
+
+import com.cb.server_user.service.OrderService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * 订单管理
+ */
+@RestController("adminOrderController")
+@RequestMapping("/admin/order")
+@Slf4j
+@Api(tags = "订单管理接口")
+public class OrderController {
+
+    @Autowired
+    private OrderService orderService;
+
 //    /**
 //     * 订单搜索
 //     *
@@ -115,4 +116,4 @@
 //        orderService.complete(id);
 //        return Result.success();
 //    }
-//}
+}

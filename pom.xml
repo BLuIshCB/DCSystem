@@ -129,6 +129,13 @@
 			<artifactId>httpclient</artifactId>
 			<version>${httpclient}</version>
 		</dependency>
+		<!--websocket客户端与浏览器双向通信依赖-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+			<version>3.0.2</version>
+		</dependency>
+
 
 		<!--	其他-->
 		<dependency>

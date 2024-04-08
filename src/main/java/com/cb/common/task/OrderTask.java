@@ -66,14 +66,16 @@ public class OrderTask {
     }
 
     //每天23点关闭店铺
-    @Scheduled(cron = "0 0 23 * * ? *")
+    @Scheduled(cron = "0 0 23 * * ? ")
     public void closeShop(){
+        log.info("23点，自动关闭店铺");
         redisTemplate.opsForValue().set(KEY,0);
     }
 
     //每天9点开启店铺
-    @Scheduled(cron = "0 0 9 * * ? *")
+    @Scheduled(cron = "0 0 9 * * ? ")
     public void openShop(){
-        redisTemplate.opsForValue().set(KEY,0);
+        log.info("9点，自动开启店铺");
+        redisTemplate.opsForValue().set(KEY,1);
     }
 }
