@@ -2,6 +2,7 @@ package com.cb.server_admin.controller;
 
 import com.cb.common.result.PageResult;
 import com.cb.common.result.Result;
+import com.cb.pojo.dto.OrdersCancelDTO;
 import com.cb.pojo.dto.OrdersConfirmDTO;
 import com.cb.pojo.dto.OrdersRejectionDTO;
 import com.cb.pojo.page.OrdersPageQueryDTO;
@@ -89,29 +90,29 @@ public class OrderController {
         return Result.success();
     }
 
-//    /**
-//     * 取消订单
-//     *
-//     * @return
-//     */
-//    @PutMapping("/cancel")
-//    @ApiOperation("取消订单")
-//    public Result cancel(@RequestBody OrdersCancelDTO ordersCancelDTO) throws Exception {
-//        orderService.cancel(ordersCancelDTO);
-//        return Result.success();
-//    }
-//
-//    /**
-//     * 派送订单
-//     *
-//     * @return
-//     */
-//    @PutMapping("/delivery/{id}")
-//    @ApiOperation("派送订单")
-//    public Result delivery(@PathVariable("id") Long id) {
-//        orderService.delivery(id);
-//        return Result.success();
-//    }
+    /**
+     * 取消订单
+     *
+     * @return
+     */
+    @PutMapping("/cancel")
+    @ApiOperation("取消订单")
+    public Result cancel(@RequestBody OrdersCancelDTO ordersCancelDTO) throws Exception {
+        orderService.cancel(ordersCancelDTO);
+        return Result.success();
+    }
+
+    /**
+     * 派送订单
+     *
+     * @return
+     */
+    @PutMapping("/delivery/{id}")
+    @ApiOperation("派送订单")
+    public Result delivery(@PathVariable("id") Long id) {
+        orderService.delivery(id);
+        return Result.success();
+    }
 //
 //    /**
 //     * 完成订单
