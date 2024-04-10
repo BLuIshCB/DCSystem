@@ -7,6 +7,7 @@ import com.cb.pojo.dto.OrdersConfirmDTO;
 import com.cb.pojo.dto.OrdersRejectionDTO;
 import com.cb.pojo.page.OrdersPageQueryDTO;
 import com.cb.pojo.vo.OrderStatisticsVO;
+import com.cb.pojo.vo.OrderVO;
 import com.cb.server_user.service.OrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -51,20 +52,20 @@ public class OrderController {
         OrderStatisticsVO orderStatisticsVO = orderService.statistics();
         return Result.success(orderStatisticsVO);
     }
-//
-//    /**
-//     * 订单详情
-//     *
-//     * @param id
-//     * @return
-//     */
-//    @GetMapping("/details/{id}")
-//    @ApiOperation("查询订单详情")
-//    public Result<OrderVO> details(@PathVariable("id") Long id) {
-//        OrderVO orderVO = orderService.details(id);
-//        return Result.success(orderVO);
-//    }
-//
+
+    /**
+     * 订单详情
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/details/{id}")
+    @ApiOperation("查询订单详情")
+    public Result<OrderVO> details(@PathVariable("id") Long id) {
+        OrderVO orderVO = orderService.details(id);
+        return Result.success(orderVO);
+    }
+
     /**
      * 接单
      *
