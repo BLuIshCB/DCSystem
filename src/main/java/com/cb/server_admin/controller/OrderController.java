@@ -2,7 +2,10 @@ package com.cb.server_admin.controller;
 
 import com.cb.common.result.PageResult;
 import com.cb.common.result.Result;
+import com.cb.pojo.dto.OrdersConfirmDTO;
+import com.cb.pojo.dto.OrdersRejectionDTO;
 import com.cb.pojo.page.OrdersPageQueryDTO;
+import com.cb.pojo.vo.OrderStatisticsVO;
 import com.cb.server_user.service.OrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,18 +38,18 @@ public class OrderController {
         PageResult pageResult = orderService.conditionSearch(ordersPageQueryDTO);
         return Result.success(pageResult);
     }
-//
-//    /**
-//     * 各个状态的订单数量统计
-//     *
-//     * @return
-//     */
-//    @GetMapping("/statistics")
-//    @ApiOperation("各个状态的订单数量统计")
-//    public Result<OrderStatisticsVO> statistics() {
-//        OrderStatisticsVO orderStatisticsVO = orderService.statistics();
-//        return Result.success(orderStatisticsVO);
-//    }
+
+    /**
+     * 各个状态的订单数量统计
+     *
+     * @return
+     */
+    @GetMapping("/statistics")
+    @ApiOperation("各个状态的订单数量统计")
+    public Result<OrderStatisticsVO> statistics() {
+        OrderStatisticsVO orderStatisticsVO = orderService.statistics();
+        return Result.success(orderStatisticsVO);
+    }
 //
 //    /**
 //     * 订单详情
@@ -61,30 +64,31 @@ public class OrderController {
 //        return Result.success(orderVO);
 //    }
 //
-//    /**
-//     * 接单
-//     *
-//     * @return
-//     */
-//    @PutMapping("/confirm")
-//    @ApiOperation("接单")
-//    public Result confirm(@RequestBody OrdersConfirmDTO ordersConfirmDTO) {
-//        orderService.confirm(ordersConfirmDTO);
-//        return Result.success();
-//    }
-//
-//    /**
-//     * 拒单
-//     *
-//     * @return
-//     */
-//    @PutMapping("/rejection")
-//    @ApiOperation("拒单")
-//    public Result rejection(@RequestBody OrdersRejectionDTO ordersRejectionDTO) throws Exception {
-//        orderService.rejection(ordersRejectionDTO);
-//        return Result.success();
-//    }
-//
+    /**
+     * 接单
+     *
+     * @return
+     */
+    @PutMapping("/confirm")
+    @ApiOperation("接单")
+    public Result confirm(@RequestBody OrdersConfirmDTO ordersConfirmDTO) {
+        orderService.confirm(ordersConfirmDTO);
+        //由service层修改状态
+        return Result.success();
+    }
+
+    /**
+     * 拒单
+     *
+     * @return
+     */
+    @PutMapping("/rejection")
+    @ApiOperation("拒单")
+    public Result rejection(@RequestBody OrdersRejectionDTO ordersRejectionDTO) throws Exception {
+        orderService.rejection(ordersRejectionDTO);
+        return Result.success();
+    }
+
 //    /**
 //     * 取消订单
 //     *
