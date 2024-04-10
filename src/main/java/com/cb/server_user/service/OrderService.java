@@ -151,47 +151,23 @@ public class OrderService  {
         orders.setStatus(orders.TO_BE_CONFIRMED);
         orderMapper.update(orders);
 
+        Orders ordersDB = orderMapper.getById(id);
+
+        // 校验订单是否存在
+        if (ordersDB == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
         //通过websocket向客户端浏览器推送消息 type orderId content
         Map map = new HashMap();
         map.put("type",1); // 1表示来单提醒 2表示客户催单
         map.put("orderId",orders.getId());
-        map.put("msg","您有一个新的订单，请及时处理");
+        map.put("content","订单号：" + ordersDB.getNumber());
+        map.put("msg","用户下单，请及时查看");
 
         String json = JSON.toJSONString(map);
         webSocketServer.sendToAllClient(json);
     }
-//
-//    /**
-//     * 支付成功，修改订单状态
-//     *
-//     * @param outTradeNo
-//     */
-//    public void paySuccess(String outTradeNo) {
-//        // 当前登录用户id
-//        Long userId = BaseContext.getCurrentId();
-//
-//        // 根据订单号查询当前用户的订单
-//        Orders ordersDB = orderMapper.getByNumberAndUserId(outTradeNo, userId);
-//
-//        // 根据订单id更新订单的状态、支付方式、支付状态、结账时间
-//        Orders orders = Orders.builder()
-//                .id(ordersDB.getId())
-//                .status(Orders.TO_BE_CONFIRMED)
-//                .payStatus(Orders.PAID)
-//                .checkoutTime(LocalDateTime.now())
-//                .build();
-//
-//        orderMapper.update(orders);
-//
-//        //通过websocket向客户端浏览器推送消息 type orderId content
-//        Map map = new HashMap();
-//        map.put("type",1); // 1表示来单提醒 2表示客户催单
-//        map.put("orderId",ordersDB.getId());
-//        map.put("content","订单号：" + outTradeNo);
-//
-//        String json = JSON.toJSONString(map);
-//        webSocketServer.sendToAllClient(json);
-//    }
+
 
     /**
      * 用户端订单分页查询
@@ -326,64 +302,64 @@ public class OrderService  {
 //        // 将购物车对象批量添加到数据库
 //        shoppingCartMapper.insertBatch(shoppingCartList);
 //    }
-//
-//    /**
-//     * 订单搜索
-//     *
-//     * @param ordersPageQueryDTO
-//     * @return
-//     */
-//    public PageResult conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {
-//        PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
-//
-//        Page<Orders> page = orderMapper.pageQuery(ordersPageQueryDTO);
-//
-//        // 部分订单状态，需要额外返回订单菜品信息，将Orders转化为OrderVO
-//        List<OrderVO> orderVOList = getOrderVOList(page);
-//
-//        return new PageResult(page.getTotal(), orderVOList);
-//    }
-//
-//    private List<OrderVO> getOrderVOList(Page<Orders> page) {
-//        // 需要返回订单菜品信息，自定义OrderVO响应结果
-//        List<OrderVO> orderVOList = new ArrayList<>();
-//
-//        List<Orders> ordersList = page.getResult();
-//        if (!CollectionUtils.isEmpty(ordersList)) {
-//            for (Orders orders : ordersList) {
-//                // 将共同字段复制到OrderVO
-//                OrderVO orderVO = new OrderVO();
-//                BeanUtils.copyProperties(orders, orderVO);
-//                String orderDishes = getOrderDishesStr(orders);
-//
-//                // 将订单菜品信息封装到orderVO中，并添加到orderVOList
-//                orderVO.setOrderDishes(orderDishes);
-//                orderVOList.add(orderVO);
-//            }
-//        }
-//        return orderVOList;
-//    }
-//
-//    /**
-//     * 根据订单id获取菜品信息字符串
-//     *
-//     * @param orders
-//     * @return
-//     */
-//    private String getOrderDishesStr(Orders orders) {
-//        // 查询订单菜品详情信息（订单中的菜品和数量）
-//        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());
-//
-//        // 将每一条订单菜品信息拼接为字符串（格式：宫保鸡丁*3；）
-//        List<String> orderDishList = orderDetailList.stream().map(x -> {
-//            String orderDish = x.getName() + "*" + x.getNumber() + ";";
-//            return orderDish;
-//        }).collect(Collectors.toList());
-//
-//        // 将该订单对应的所有菜品信息拼接在一起
-//        return String.join("", orderDishList);
-//    }
-//
+
+    /**
+     * 订单搜索
+     *
+     * @param ordersPageQueryDTO
+     * @return
+     */
+    public PageResult conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {
+        PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
+
+        Page<Orders> page = orderMapper.pageQuery(ordersPageQueryDTO);
+
+        // 部分订单状态，需要额外返回订单菜品信息，将Orders转化为OrderVO
+        List<OrderVO> orderVOList = getOrderVOList(page);
+
+        return new PageResult(page.getTotal(), orderVOList);
+    }
+
+    private List<OrderVO> getOrderVOList(Page<Orders> page) {
+        // 需要返回订单菜品信息，自定义OrderVO响应结果
+        List<OrderVO> orderVOList = new ArrayList<>();
+
+        List<Orders> ordersList = page.getResult();
+        if (!CollectionUtils.isEmpty(ordersList)) {
+            for (Orders orders : ordersList) {
+                // 将共同字段复制到OrderVO
+                OrderVO orderVO = new OrderVO();
+                BeanUtils.copyProperties(orders, orderVO);
+                String orderDishes = getOrderDishesStr(orders);
+
+                // 将订单菜品信息封装到orderVO中，并添加到orderVOList
+                orderVO.setOrderDishes(orderDishes);
+                orderVOList.add(orderVO);
+            }
+        }
+        return orderVOList;
+    }
+
+    /**
+     * 根据订单id获取菜品信息字符串
+     *
+     * @param orders
+     * @return
+     */
+    private String getOrderDishesStr(Orders orders) {
+        // 查询订单菜品详情信息（订单中的菜品和数量）
+        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());
+
+        // 将每一条订单菜品信息拼接为字符串（格式：宫保鸡丁*3；）
+        List<String> orderDishList = orderDetailList.stream().map(x -> {
+            String orderDish = x.getName() + "*" + x.getNumber() + ";";
+            return orderDish;
+        }).collect(Collectors.toList());
+
+        // 将该订单对应的所有菜品信息拼接在一起
+        return String.join("", orderDishList);
+    }
+
 //    /**
 //     * 各个状态的订单数量统计
 //     *
@@ -527,28 +503,29 @@ public class OrderService  {
 //
 //        orderMapper.update(orders);
 //    }
-//
-//    /**
-//     * 客户催单
-//     * @param id
-//     */
-//    public void reminder(Long id) {
-//        // 根据id查询订单
-//        Orders ordersDB = orderMapper.getById(id);
-//
-//        // 校验订单是否存在
-//        if (ordersDB == null) {
-//            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
-//        }
-//
-//        Map map = new HashMap();
-//        map.put("type",2); //1表示来单提醒 2表示客户催单
-//        map.put("orderId",id);
-//        map.put("content","订单号：" + ordersDB.getNumber());
-//
-//        //通过websocket向客户端浏览器推送消息
-//        webSocketServer.sendToAllClient(JSON.toJSONString(map));
-//    }
+
+    /**
+     * 客户催单
+     * @param id
+     */
+    public void reminder(Long id) {
+        // 根据id查询订单
+        Orders ordersDB = orderMapper.getById(id);
+
+        // 校验订单是否存在
+        if (ordersDB == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
+        Map map = new HashMap();
+        map.put("type",2); //1表示来单提醒 2表示客户催单
+        map.put("orderId",id);
+        map.put("content","订单号：" + ordersDB.getNumber());
+        map.put("msg","用户催单！请及时查看");
+
+        //通过websocket向客户端浏览器推送消息
+        webSocketServer.sendToAllClient(JSON.toJSONString(map));
+    }
 
 
 //    /**
@@ -578,5 +555,37 @@ public class OrderService  {
 //        vo.setPackageStr(jsonObject.getString("package"));
 //
 //        return vo;
+//    }
+
+//    /**
+//     * 支付成功，修改订单状态
+//     *
+//     * @param outTradeNo
+//     */
+//    public void paySuccess(String outTradeNo) {
+//        // 当前登录用户id
+//        Long userId = BaseContext.getCurrentId();
+//
+//        // 根据订单号查询当前用户的订单
+//        Orders ordersDB = orderMapper.getByNumberAndUserId(outTradeNo, userId);
+//
+//        // 根据订单id更新订单的状态、支付方式、支付状态、结账时间
+//        Orders orders = Orders.builder()
+//                .id(ordersDB.getId())
+//                .status(Orders.TO_BE_CONFIRMED)
+//                .payStatus(Orders.PAID)
+//                .checkoutTime(LocalDateTime.now())
+//                .build();
+//
+//        orderMapper.update(orders);
+//
+//        //通过websocket向客户端浏览器推送消息 type orderId content
+//        Map map = new HashMap();
+//        map.put("type",1); // 1表示来单提醒 2表示客户催单
+//        map.put("orderId",ordersDB.getId());
+//        map.put("content","订单号：" + outTradeNo);
+//
+//        String json = JSON.toJSONString(map);
+//        webSocketServer.sendToAllClient(json);
 //    }
 }

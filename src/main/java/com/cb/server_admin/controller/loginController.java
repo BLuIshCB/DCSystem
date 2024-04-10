@@ -24,12 +24,14 @@ import java.util.Map;
 /*
 * 员工相关接口
 * */
+@CrossOrigin
 public class loginController {
     @Autowired
     private EmployeeService employeeService;
     //jtw的设置文件
     @Autowired
     private JwtProperties jwtProperties;
+
 
     @PostMapping("/login")
     @ApiOperation(value = "员工登录")

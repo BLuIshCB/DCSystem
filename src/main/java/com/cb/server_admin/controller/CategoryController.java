@@ -21,6 +21,7 @@ import java.util.List;
 @RequestMapping("/admin/category")
 @Api(tags = "分类相关接口")
 @Slf4j
+@CrossOrigin
 public class CategoryController {
 
     @Autowired

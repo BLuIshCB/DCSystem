@@ -17,6 +17,7 @@ import java.util.List;
 @RequestMapping("/user/shoppingCart")
 @Slf4j
 @Api(tags = "C端购物车相关接口")
+@CrossOrigin
 public class ShoppingCartController {
 
     @Autowired

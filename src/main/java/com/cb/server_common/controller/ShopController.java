@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/common/shop")
 @Api(tags = "店铺相关接口")
 @Slf4j
+@CrossOrigin
 public class ShopController {
 
     public static final String KEY = "shop:SHOP_STATUS";

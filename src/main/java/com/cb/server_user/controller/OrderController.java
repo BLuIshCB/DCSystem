@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user/order")
 @Api(tags = "用户端订单相关接口")
 @Slf4j
+@CrossOrigin
 public class OrderController {
 
     @Autowired
@@ -105,18 +106,18 @@ public class OrderController {
 //        orderService.repetition(id);
 //        return Result.success();
 //    }
-//
-//    /**
-//     * 客户催单
-//     * @param id
-//     * @return
-//     */
-//    @GetMapping("/reminder/{id}")
-//    @ApiOperation("客户催单")
-//    public Result reminder(@PathVariable("id") Long id){
-//        orderService.reminder(id);
-//        return Result.success();
-//    }
+
+    /**
+     * 客户催单
+     * @param id
+     * @return
+     */
+    @GetMapping("/reminder/{id}")
+    @ApiOperation("客户催单")
+    public Result reminder(@PathVariable("id") Long id){
+        orderService.reminder(id);
+        return Result.success();
+    }
 
     //    /**
 //     * 订单支付

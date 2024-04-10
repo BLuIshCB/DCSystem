@@ -21,6 +21,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/admin")
 @Slf4j
+@CrossOrigin
 public class upLoadImageController {
     @Value("${cbinfo.img.url}")
     String URL;

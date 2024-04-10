@@ -1,5 +1,8 @@
 package com.cb.server_admin.controller;
 
+import com.cb.common.result.PageResult;
+import com.cb.common.result.Result;
+import com.cb.pojo.page.OrdersPageQueryDTO;
 import com.cb.server_user.service.OrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,23 +17,24 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/order")
 @Slf4j
 @Api(tags = "订单管理接口")
+@CrossOrigin
 public class OrderController {
 
     @Autowired
     private OrderService orderService;
 
-//    /**
-//     * 订单搜索
-//     *
-//     * @param ordersPageQueryDTO
-//     * @return
-//     */
-//    @GetMapping("/conditionSearch")
-//    @ApiOperation("订单搜索")
-//    public Result<PageResult> conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {
-//        PageResult pageResult = orderService.conditionSearch(ordersPageQueryDTO);
-//        return Result.success(pageResult);
-//    }
+    /**
+     * 订单搜索
+     *
+     * @param ordersPageQueryDTO
+     * @return
+     */
+    @GetMapping("/conditionSearch")
+    @ApiOperation("订单搜索")
+    public Result<PageResult> conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {
+        PageResult pageResult = orderService.conditionSearch(ordersPageQueryDTO);
+        return Result.success(pageResult);
+    }
 //
 //    /**
 //     * 各个状态的订单数量统计
