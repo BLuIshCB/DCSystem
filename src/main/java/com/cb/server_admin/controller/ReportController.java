@@ -1,6 +1,9 @@
 package com.cb.server_admin.controller;
 
 
+import com.cb.common.result.Result;
+import com.cb.pojo.vo.TurnoverReportVO;
+import com.cb.server_admin.service.ReportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -22,23 +25,23 @@ import java.time.LocalDate;
 @Slf4j
 public class ReportController {
 
-//    @Autowired
-//    private ReportService reportService;
-//
-//    /**
-//     * 营业额统计
-//     * @param begin
-//     * @param end
-//     * @return
-//     */
-//    @GetMapping("/turnoverStatistics")
-//    @ApiOperation("营业额统计")
-//    public Result<TurnoverReportVO> turnoverStatistics(
-//            @DateTimeFormat(pattern = "yyyy-MM-dd")  LocalDate begin,
-//            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end){
-//        log.info("营业额数据统计：{},{}",begin,end);
-//        return Result.success(reportService.getTurnoverStatistics(begin,end));
-//    }
+    @Autowired
+    private ReportService reportService;
+
+    /**
+     * 营业额统计
+     * @param begin
+     * @param end
+     * @return
+     */
+    @GetMapping("/turnoverStatistics")
+    @ApiOperation("营业额统计")
+    public Result<TurnoverReportVO> turnoverStatistics(
+            @DateTimeFormat(pattern = "yyyy-MM-dd")  LocalDate begin,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end){
+        log.info("营业额数据统计：{},{}",begin,end);
+        return Result.success(reportService.getTurnoverStatistics(begin,end));
+    }
 //
 //    /**
 //     * 用户统计
