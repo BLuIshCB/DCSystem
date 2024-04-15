@@ -238,11 +238,11 @@ public class ReportService {
                 .numberList(numberList)
                 .build();
     }
-//
-//    /**
-//     * 导出运营数据报表
-//     * @param response
-//     */
+
+    /**
+     * 导出运营数据报表
+     * @param response
+     */
 //    public void exportBusinessData(HttpServletResponse response) {
 //        //1. 查询数据库，获取营业数据---查询最近30天的运营数据
 //        LocalDate dateBegin = LocalDate.now().minusDays(30);

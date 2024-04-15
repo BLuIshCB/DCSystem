@@ -135,8 +135,18 @@
 			<artifactId>spring-boot-starter-websocket</artifactId>
 			<version>3.0.2</version>
 		</dependency>
-
-
+		<!--execl导入导出依赖-->
+		<!--Apache	POI-->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.16</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.16</version>
+		</dependency>
 		<!--	其他-->
 		<dependency>
 			<groupId>javax.servlet</groupId>

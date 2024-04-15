@@ -90,11 +90,11 @@ public class ReportController {
         log.info("销量排名top10：{},{}",begin,end);
         return Result.success(reportService.getSalesTop10(begin,end));
     }
-//
-//    /**
-//     * 导出运营数据报表
-//     * @param response
-//     */
+
+    /**
+     * 导出运营数据报表
+     * @param response
+     */
 //    @GetMapping("/export")
 //    @ApiOperation("导出运营数据报表")
 //    public void export(HttpServletResponse response){
