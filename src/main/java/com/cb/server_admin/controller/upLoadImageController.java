@@ -30,7 +30,7 @@ public class upLoadImageController {
     @PostMapping("/upLoadImage")
     public Result<String> upLoadImage(@RequestParam("dishid") int dishid, @RequestParam("imageid") int imageid, MultipartFile file) {
         try {
-//            log.info("url:{}",URL);
+            log.info("url:{}",URL);
             //原始文件名
             String originalFilename = file.getOriginalFilename();
             //截取原始文件名的后缀
@@ -49,7 +49,7 @@ public class upLoadImageController {
     }
     @GetMapping(value = "/getImage/{dishId}/{imageid}" ,produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getImage(@PathVariable  Integer dishId,@PathVariable Integer imageid ) throws Exception {
-        log.info("{}/{}",dishId,imageid);
+//        log.info("{}/{}",dishId,imageid);
         return  imgService.getImg(dishId,imageid);
     }
 }

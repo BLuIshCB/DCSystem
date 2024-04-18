@@ -77,7 +77,6 @@ public class DishController {
     public Result delete(@RequestParam List<Long> ids) {
         log.info("菜品批量删除：{}", ids);
         dishService.deleteBatch(ids);
-
         //将所有的菜品缓存数据清理掉，所有以dish_开头的key
         cleanCache("dish_*");
 

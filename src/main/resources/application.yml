@@ -34,7 +34,7 @@ cbinfo:
     user-ttl: 86400000
     user-token-name: authentication
   img:
-    url: D:\CBBC\IDEA_SPACE\CB_MYPJ1\myimage\
+    url: D:\CBBC\IDEA_SPACE\MYPJ\CB_MYPJ1\myimage\
 
 
 mybatis-plus:

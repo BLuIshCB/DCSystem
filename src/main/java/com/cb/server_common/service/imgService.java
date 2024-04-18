@@ -30,7 +30,7 @@ public class imgService {
             System.out.println(imgMapper.selectOne(wrapper));
             //获得url地址
             String fileName =  imgMapper.selectOne(wrapper).getImgUrl();
-
+            log.info("fileName is "+fileName);
             File file = new File(fileName);
             FileInputStream inputStream = new FileInputStream(file);
             byte[] bytes = new byte[inputStream.available()];
