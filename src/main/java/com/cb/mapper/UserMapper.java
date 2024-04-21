@@ -1,6 +1,8 @@
 package com.cb.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.cb.common.annotation.AutoFill;
+import com.cb.common.enumeration.OperationType;
 import com.cb.pojo.entity.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -22,6 +24,7 @@ public interface UserMapper  {
      * 插入数据
      * @param user
      */
+
     void insert(User user);
 
     @Select("select * from user where id = #{id}")

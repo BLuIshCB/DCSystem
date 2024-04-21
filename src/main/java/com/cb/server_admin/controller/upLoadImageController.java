@@ -30,7 +30,7 @@ public class upLoadImageController {
     @PostMapping("/upLoadImage")
     public Result<String> upLoadImage(@RequestParam("dishid") int dishid, @RequestParam("imageid") int imageid, MultipartFile file) {
         try {
-            log.info("url:{}",URL);
+//            log.info("url:{}",URL);
             //原始文件名
             String originalFilename = file.getOriginalFilename();
             //截取原始文件名的后缀
@@ -40,7 +40,7 @@ public class upLoadImageController {
             //将文件信息保存到数据库
             img img =new img().builder().imgUrl(filePath).dishId(dishid).imgIndex(imageid).build();
             boolean flag = imgService.set(img);
-            log.info("flag:{}",filePath);
+//            log.info("flag:{}",filePath);
             return Result.success("/admin/getImage/"+dishid+"/"+imageid);
         } catch (IOException e) {
             log.error("文件上传失败：{}", e);

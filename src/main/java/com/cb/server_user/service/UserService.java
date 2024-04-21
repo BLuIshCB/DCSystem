@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +43,7 @@ public class UserService {
         }
         User user = new User();
         BeanUtils.copyProperties(userRegisterDTO,user);
+        user.setCreateTime(LocalDateTime.now());
         userMapper.insert(user);
         return Result.success();
     }
