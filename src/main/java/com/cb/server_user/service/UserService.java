@@ -32,11 +32,11 @@ public class UserService {
     @Autowired
     private JwtProperties jwtProperties;
 
-    public static final String LOGIN_CODE_KEY = "login:code_";
+    public static final String LOGIN_CODE_KEY = "login:phone_";
     //验证码在redis里过期时间：1min
     public static final Long LOGIN_CODE_TTL = 1L;
 
-        public Result register (UserRegisterDTO userRegisterDTO){
+    public Result register (UserRegisterDTO userRegisterDTO){
         String name = userRegisterDTO.getName();
         if (!cheackName(name)){
             throw new NameRepeatException("名字重复");
