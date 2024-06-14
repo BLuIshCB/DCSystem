@@ -52,15 +52,15 @@ public class UserController {
         }
         return userService.sendCode(phone);
     }
-    @PostMapping("/login/phone")
-    public Result login_phone(@RequestBody UserLoginDTO userLoginDTO ){
-        if (userLoginDTO.getPhone() == null){
+    @GetMapping("/login/phone")
+    public Result login_phone(@RequestParam String code ,@RequestParam String phone ){
+        if (phone == null){
             return Result.error("手机号不能为空");
         }
-        if (userLoginDTO.getCode() == null){
+        if (code == null){
             return Result.error("验证码不能为空");
         }
-        return userService.loginbyPhone(userLoginDTO.getCode(),userLoginDTO.getPhone());
+        return userService.loginbyPhone(code,phone);
     }
 
 }

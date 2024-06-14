@@ -89,7 +89,7 @@ public class UserService {
 
     public Result loginbyPhone(String code, String phone) {
         String rediscode = stringRedisTemplate.opsForValue().get(LOGIN_CODE_KEY + phone);
-        log.info("{}", rediscode);
+
         if (rediscode == null) {
             return Result.error("验证码错误");
         }
@@ -108,6 +108,7 @@ public class UserService {
                 .id(user.getId())
                 .name(user.getName())
                 .authentication(token).build();
+        log.info("登录成功");
         return Result.success(userLoginVO);
     }
 }
