@@ -2,8 +2,10 @@ package com.cb.common.config;
 
 import com.cb.common.interceptor.JwtTokenAdminInterceptor;
 import com.cb.common.interceptor.JwtTokenUserInterceptor;
+import com.cb.common.interceptor.RateLimiterInterceptor;
 import com.cb.common.utils.JacksonObjectMapper;
 import com.github.pagehelper.PageHelper;
+import com.google.common.util.concurrent.RateLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.filters.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -96,53 +99,6 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
 
 
-
-    /**
-    *   接口文档生成的配置
-    * */
-//    @Bean
-//    public Docket docket1(){
-//        log.info("准备生成管理端接口文档...");
-//        ApiInfo apiInfo = new ApiInfoBuilder()
-//                .title("CBPJ项目管理端接口文档")
-//                .version("2.0")
-//                .description("CBPJ项目管理端接口文档")
-//                .build();
-//
-//        Docket docket = new Docket(DocumentationType.SWAGGER_2)
-//                .groupName("管理端接口")
-//                .apiInfo(apiInfo)
-//                .select()
-//                //指定生成接口需要扫描的包
-//                .apis(RequestHandlerSelectors.basePackage("com.cb.system.controller"))
-//                .paths(PathSelectors.any())
-//                .build();
-//
-//        return docket;
-//    }
-    /**
-     *   接口文档生成的配置
-     * */
-//    @Bean
-//    public Docket docket2(){
-//        log.info("准备生成用户端接口文档...");
-//        ApiInfo apiInfo = new ApiInfoBuilder()
-//                .title("CBPJ项目接口文档")
-//                .version("2.0")
-//                .description("项目接口文档")
-//                .build();
-//
-//        Docket docket = new Docket(DocumentationType.SWAGGER_2)
-//                .groupName("用户端接口")
-//                .apiInfo(apiInfo)
-//                .select()
-//                //指定生成接口需要扫描的包
-//                .apis(RequestHandlerSelectors.basePackage("com.cb.controller.user"))
-//                .paths(PathSelectors.any())
-//                .build();
-//
-//        return docket;
-//    }
     /**
      * json时间格式转换， 需要配合utils包下的JacksonObjectMapper使用
     * */
@@ -154,6 +110,17 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         converter.setObjectMapper(new JacksonObjectMapper());
         //将自己的消息转化器加入容器中
         converters.add(0,converter);
+    }
+
+    /**
+     * test接口，1秒钟生成1个令牌，也就是1秒中允许一个人访问
+     */
+
+    public void addLimitInterceptors(InterceptorRegistry registry) {
+
+        registry.addInterceptor(new RateLimiterInterceptor(RateLimiter.create(1, 1, TimeUnit.SECONDS)))
+                .addPathPatterns("/test");
+
     }
 
 }
