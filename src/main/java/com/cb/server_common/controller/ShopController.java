@@ -22,7 +22,6 @@ public class ShopController {
 
     /**
      * 设置店铺的营业状态
-     * @param status
      * @return
      */
     @PutMapping("")
