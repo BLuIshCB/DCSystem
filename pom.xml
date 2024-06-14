@@ -158,11 +158,11 @@
 			<artifactId>jaxb-api</artifactId>
 			<version>2.3.0</version>
 		</dependency>
-<!--google的工具包-->
+<!--google的工具包guava<-->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>29.0-jre</version>
+			<version>30.1-jre</version>
 		</dependency>
 
 

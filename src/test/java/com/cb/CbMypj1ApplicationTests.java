@@ -26,46 +26,42 @@ import java.time.LocalDateTime;
 
 @SpringBootTest
 class CbMypj1ApplicationTests {
-	@Autowired
-	EmployeeMapper employeeMapper;
+    @Autowired
+    EmployeeMapper employeeMapper;
 
-	@Autowired
-	EmployeeService employeeService;
-@Autowired
-	CategoryMapper categoryMapper;
-@Autowired
-	DishMapper dishMapper;
-	@Test
-	void utilTest() {
+    @Autowired
+    EmployeeService employeeService;
+    @Autowired
+    CategoryMapper categoryMapper;
+    @Autowired
+    DishMapper dishMapper;
+
+
+    @Test
+    void utilTest() {
 //		Dish dish= DataUtil.build(Dish.class);//生成随机对象
 
-	}
-	@Autowired
-	DishService dishService;
-	@Autowired
-	RedisTemplate redisTemplate;
-	@Test
-	void Test1() {
+    }
 
-//		dishService.startOrStop(0,2l);
-		DishPageQueryDTO d = new DishPageQueryDTO();
-		d.setPage(1);
-		d.setPageSize(2);
-//		d.setName("test");
-//		String a = "2a";
-//		String b= "2b";
-//		System.out.println(dishService.pageQuery(d));
-//		redisTemplate.opsForValue().set(a,b);
-	}
-	@Autowired
-	imageMapper imgMapper;
-	@Autowired
-	imgService imgService;
+    @Autowired
+    DishService dishService;
+    @Autowired
+    RedisTemplate redisTemplate;
 
-	@Test
-	void Test2() {
+    @Test
+    void Test1() {
+        System.out.println(111);
+    }
+
+    @Autowired
+    imageMapper imgMapper;
+    @Autowired
+    imgService imgService;
+
+    @Test
+    void Test2() {
 //		System.out.println(imgMapper.selectById(1));
 
-	}
+    }
 
 }

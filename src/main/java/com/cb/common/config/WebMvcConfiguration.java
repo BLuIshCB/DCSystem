@@ -2,6 +2,7 @@ package com.cb.common.config;
 
 import com.cb.common.interceptor.JwtTokenAdminInterceptor;
 import com.cb.common.interceptor.JwtTokenUserInterceptor;
+//import com.cb.common.interceptor.RateLimiterInterceptor;
 import com.cb.common.interceptor.RateLimiterInterceptor;
 import com.cb.common.utils.JacksonObjectMapper;
 import com.github.pagehelper.PageHelper;
@@ -41,8 +42,12 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
     @Autowired
     private JwtTokenUserInterceptor jwtTokenUserInterceptor;
+    @Autowired
+    private RateLimiterInterceptor rateLimiterInterceptor;
+
     /**
      * 注册自定义拦截器
+     *
      * @param registry
      */
     @Override
@@ -61,21 +66,29 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 .excludePathPatterns("/user/user/**")
                 .excludePathPatterns("/user/query/**")
                 .excludePathPatterns("/user/shop/status");
+        log.info("开始注册限流拦截器...");
+        registry.addInterceptor(rateLimiterInterceptor)
+                .addPathPatterns("/test")
+                .addPathPatterns("/user/user/**")
+                .addPathPatterns("/user/query/**")
+                .addPathPatterns("/user/shop/status");
     }
+
     /**
-    * 使用mybatis plus 与pagehleper时需要加入下面的配置
-    * */
+     * 使用mybatis plus 与pagehleper时需要加入下面的配置
+     */
     @Bean
-    public PageHelper pageHelper(){
+    public PageHelper pageHelper() {
         PageHelper pageHelper = new PageHelper();
         Properties properties = new Properties();
-        properties.setProperty("offsetAsPageNum","true");
-        properties.setProperty("rowBoundsWithCount","true");
-        properties.setProperty("reasonable","true");
-        properties.setProperty("dialect","mysql");
+        properties.setProperty("offsetAsPageNum", "true");
+        properties.setProperty("rowBoundsWithCount", "true");
+        properties.setProperty("reasonable", "true");
+        properties.setProperty("dialect", "mysql");
         pageHelper.setProperties(properties);
         return pageHelper;
     }
+
     //允许垮域
     @Bean
     public CorsWebFilter corsWebFilter() {
@@ -92,16 +105,14 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         // 是否允许携带cookie进行跨域
         corsConfiguration.setAllowCredentials(true);
 
-        source.registerCorsConfiguration("/**",corsConfiguration);
+        source.registerCorsConfiguration("/**", corsConfiguration);
         return new CorsWebFilter(source);
     }
 
 
-
-
     /**
      * json时间格式转换， 需要配合utils包下的JacksonObjectMapper使用
-    * */
+     */
     protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
         log.info("注册扩展消息转换器...");
         //创建一个消息转换器对象
@@ -109,18 +120,8 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         //需要为消息转换器设置一个对象转换器，对象转换器可以将Java对象序列化为json数据
         converter.setObjectMapper(new JacksonObjectMapper());
         //将自己的消息转化器加入容器中
-        converters.add(0,converter);
+        converters.add(0, converter);
     }
 
-    /**
-     * test接口，1秒钟生成1个令牌，也就是1秒中允许一个人访问
-     */
-
-    public void addLimitInterceptors(InterceptorRegistry registry) {
-
-        registry.addInterceptor(new RateLimiterInterceptor(RateLimiter.create(1, 1, TimeUnit.SECONDS)))
-                .addPathPatterns("/test");
-
-    }
 
 }
