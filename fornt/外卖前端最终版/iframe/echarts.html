@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../commonjs/echarts.js"></script>
+    <script src="../commonjs/vue.js"></script>
+    <script src="../commonjs/axios.min.js"></script>
+    <script src="../commonjs/info.js"></script>
+    <!-- 导入弹窗的样式 -->
+    <link rel="stylesheet" type="text/css" href="http://css.huangwx.cn/css/sweetalert.css">
+    <script type="text/javascript" src="http://css.huangwx.cn/js/sweetalert-dev.js"></script>
+    <style>
+        #downloadBtn {
+            background-color: #429de7;
+            color: #ffffff;
+            font-size: 16px;
+            padding: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: wrap_content;
+            height: wrap_content;
+            border-width: 0px;
+            
+        }
+
+
+        #cbcontainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            
+        }
+
+        .span {
+            margin-left: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="downloadBtn" onclick="download()">下载近30天营业数据</button><br><br>
+    <div id="cbcontainer">
+        <div id="ec1" style="margin-right: 100px;">
+            <span>最近七天营业额</span>
+            <div id="c1" style="width: 600px;height:400px;"></div><br>
+        </div>
+        <div id="ec2">
+            <span>最近七天用户数据</span>
+            <div id="c2" style="width: 600px;height:400px;"></div><br>
+        </div>
+        <div id="ec3" style="margin-right: 100px;">
+            <span>最近七天订单数据</span>
+            <div><span id="total">订单总数</span>
+                <span id="valid">有效订单</span>
+                <span id="persnet">订单完成率</span>
+                <div id="c3" style="width: 600px;height:400px;"></div><br>
+            </div>
+        </div>
+        <div id="ec4" >
+            <span>最近七天热销菜品TOP10</span>
+            <div id="c4" style="width: 600px;height:400px;"></div>
+        </div>
+
+    </div>
+
+</body>
+<script>
+    // var endDay;
+
+    // var datas;
+    // var days;
+
+    // var totalUserList;
+    // var newUserList;
+
+    getdata1(getDateSevenDaysAgo(), getDayNow());
+    getdata2(getDateSevenDaysAgo(), getDayNow());
+    getdata3(getDateSevenDaysAgo(), getDayNow());
+    getdata4(getDateSevenDaysAgo(), getDayNow());
+
+    // 设置延时为0.5秒
+    setTimeout(getecharts1, 200);
+    setTimeout(getecharts2, 210);
+    setTimeout(getecharts3, 220);
+    setTimeout(getecharts4, 230);
+
+    // 获取当前日期
+    function getDayNow() {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1;
+        const day = currentDate.getDate();
+
+        return year + "-" + month.toString().padStart(2, '0') + "-" + day.toString().padStart(2, '0');
+
+    }
+    // 获取7天前的日期
+    function getDateSevenDaysAgo() {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1;
+        const day = currentDate.getDate();
+
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(day - 7);
+        const year2 = sevenDaysAgo.getFullYear();
+        const month2 = sevenDaysAgo.getMonth() + 1;
+        const day2 = sevenDaysAgo.getDate();
+
+        return year2 + "-" + month2.toString().padStart(2, '0') + "-" + day2.toString().padStart(2, '0');
+    }
+    //改变日期格式
+    function extractDates(dateList) {
+        const result = [];
+        for (const date of dateList) {
+            // console.log(dateList);
+            const lastTwoDigits = date.slice(-2);
+            // console.log(lastTwoDigits);
+            result.push(lastTwoDigits);
+        }
+        return result;
+    }
+    //分割字符串
+    function splitString(str) {
+        const result = str.split(',');
+        return result;
+    }
+    //封装改变span
+    function changeSpan(id, msg) {
+        const span = document.getElementById(id);
+        span.textContent = msg;
+    }
+
+
+    //画图函数1
+    function getecharts1() {
+
+        var myChart = echarts.init(document.getElementById('c1'));
+        // 指定图表的配置项和数据
+        var option = {
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            legend: {
+                data: ['营业额']
+            },
+            xAxis: {
+                type: 'category',
+                data: extractDates(days)
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    data: datas,
+                    type: 'bar'
+                }
+            ]
+            // series: [
+            //     {
+            //         name: '营业额',
+            //         data: datas,
+            //         type: 'bar',
+
+            //     }
+            // ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
+
+    //画图函数2
+    function getecharts2() {
+        // console.log(extractDates(days));
+
+        var myChart = echarts.init(document.getElementById('c2'));
+
+        // 指定图表的配置项和数据
+        option = {
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            legend: {
+                data: ['总用户数', '新增用户数']
+            },
+            xAxis: {
+                type: 'category',
+                data: extractDates(days)
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name: '总用户数',
+                    data: totalUserList,
+                    type: 'line',
+                    smooth: true
+                },
+                {
+                    name: '新增用户数',
+                    data: newUserList,
+                    type: 'line',
+                    smooth: true
+                }
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
+    //画图函数3
+    function getecharts3() {
+        // console.log(extractDates(days));
+
+        var myChart = echarts.init(document.getElementById('c3'));
+
+        // 指定图表的配置项和数据
+        option = {
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            legend: {
+                data: ['有效订单数', '总订单数']
+            },
+            xAxis: {
+                type: 'category',
+                data: extractDates(days)
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name: '有效订单数',
+                    data: validOrderCountList,
+                    type: 'line',
+                    smooth: true
+                },
+                {
+                    name: '总订单数',
+                    data: orderCountList,
+                    type: 'line',
+                    smooth: true
+                }
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+        changeSpan("total", "订单总数：" + totalOrderCount);
+        changeSpan("valid", "有效订单：" + validOrderCount);
+        changeSpan("persnet", "订单完成率:" + orderCompletionRate * 100 + "%");
+
+
+
+    }
+    function getecharts4() {
+        // console.log(extractDates(days));
+        var myChart = echarts.init(document.getElementById('c4'));
+        // 指定图表的配置项和数据
+        var option = {
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            legend: {
+                data: ['热销TOP10']
+            },
+            xAxis: {
+                type: 'category',
+                data: nameList
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    data: numberList,
+                    type: 'bar'
+                }
+            ]
+            // series: [
+            //     {
+            //         name: '营业额',
+            //         data: datas,
+            //         type: 'bar',
+
+            //     }
+            // ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
+    // 获取数据1
+    function getdata1(beginDay, endDay) {
+
+        // beginDay = "2024-04-15"
+        axios({
+            url: "http://" + baseurl + "/admin/report/turnoverStatistics",
+            params: {
+                "begin": beginDay,
+                "end": endDay
+            },
+            method: "get",
+            headers: {
+                'Content-Type': 'application/json',
+                'token': localStorage.getItem("token")
+            }
+
+        }).then(function (response) {
+
+            // console.log(response.data.data);
+            datas = splitString(response.data.data.turnoverList);
+            days = splitString(response.data.data.dateList);
+            if (response.data.code == 0) {
+                swal("请求失败", "稍后再试");
+            }
+
+        }).catch(function (error) {
+
+            swal("请求失败", "请检查网络后重试");
+        });
+    }
+    // 获取数据2
+    function getdata2(beginDay, endDay) {
+        // beginDay = "2024-04-15"
+        axios({
+            url: "http://" + baseurl + "/admin/report/userStatistics",
+            params: {
+                "begin": beginDay,
+                "end": endDay
+            },
+            method: "get",
+            headers: {
+                'Content-Type': 'application/json',
+                'token': localStorage.getItem("token")
+            }
+
+        }).then(function (response) {
+
+            // console.log(response.data.data);
+            totalUserList = splitString(response.data.data.totalUserList);
+            newUserList = splitString(response.data.data.newUserList);
+            days = splitString(response.data.data.dateList);
+
+            if (response.data.code == 0) {
+                swal("请求失败", "稍后再试");
+            }
+
+        }).catch(function (error) {
+
+            swal("请求失败", "请检查网络后重试");
+        });
+    }
+    // 获取数据3
+    function getdata3(beginDay, endDay) {
+        // beginDay = "2024-04-15"
+        axios({
+            url: "http://" + baseurl + "/admin/report/ordersStatistics",
+            params: {
+                "begin": beginDay,
+                "end": endDay
+            },
+            method: "get",
+            headers: {
+                'Content-Type': 'application/json',
+                'token': localStorage.getItem("token")
+            }
+
+        }).then(function (response) {
+
+            // console.log(response.data.data);
+            totalOrderCount = response.data.data.totalOrderCount;
+            validOrderCount = response.data.data.validOrderCount;
+            orderCompletionRate = response.data.data.orderCompletionRate;
+            orderCountList = splitString(response.data.data.orderCountList);
+            validOrderCountList = splitString(response.data.data.validOrderCountList)
+            days = splitString(response.data.data.dateList);
+            if (response.data.code == 0) {
+                swal("请求失败", "稍后再试");
+            }
+
+        }).catch(function (error) {
+
+            swal("请求失败", "请检查网络后重试");
+        });
+    }
+    // 获取数据4
+    function getdata4(beginDay, endDay) {
+        // beginDay = "2024-04-15"
+        axios({
+            url: "http://" + baseurl + "/admin/report/top10",
+            params: {
+                "begin": beginDay,
+                "end": endDay
+            },
+            method: "get",
+            headers: {
+                'Content-Type': 'application/json',
+                'token': localStorage.getItem("token")
+            }
+
+        }).then(function (response) {
+            // console.log(response.data.data);
+
+            nameList = splitString(response.data.data.nameList);
+            numberList = splitString(response.data.data.numberList);
+            if (response.data.code == 0) {
+                swal("请求失败", "稍后再试");
+            }
+
+        }).catch(function (error) {
+
+            swal("请求失败", "请检查网络后重试");
+        });
+    }
+
+    //下载excel
+    function download() {
+
+        const downloadurl = "http://" + baseurl + "/admin/report/export"
+
+        axios.get(
+            downloadurl,
+            {
+                headers: {
+                    'content-type': 'application/json',
+                    'token': localStorage.getItem("token")
+                },
+                responseType: 'blob'
+            })
+            .then((res) => {
+                console.log(res);
+                if (res.data.code == 0) {
+                    swal("请求失败", "稍后再试");
+                }
+
+                const blob = new Blob([res.data], { type: 'application/vnd.ms-excel' });
+                const url = URL.createObjectURL(blob);
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = '运营数据';
+
+                document.body.appendChild(a);
+                a.click();
+
+                URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            })
+            .catch(function (error) {
+
+                swal("请求失败", "请检查网络后重试");
+            });
+    }
+
+    document.getElementById('downloadBtn').addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const progressBar = document.getElementById('progressBar');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        downloadBtn.disabled = true;
+        downloadBtn.textContent = '下载中...';
+        //   download();
+        downloadBtn.disabled = false;
+        downloadBtn.textContent = '近30天营业数据';
+    });
+
+</script>
+
+</html>

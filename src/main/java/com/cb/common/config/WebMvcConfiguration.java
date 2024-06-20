@@ -69,7 +69,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         log.info("开始注册限流拦截器...");
         registry.addInterceptor(rateLimiterInterceptor)
                 .addPathPatterns("/test")
-                .addPathPatterns("/user/user/**")
+//                .addPathPatterns("/user/user/**")
                 .addPathPatterns("/user/query/**")
                 .addPathPatterns("/user/shop/status");
     }

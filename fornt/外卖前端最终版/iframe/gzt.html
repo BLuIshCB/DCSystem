@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>工作台</title>
+  <script src="../commonjs/vue.js"></script>
+    <script src="../commonjs/axios.min.js"></script>
+    <script src="../commonjs/info.js"></script>
+  <style>
+    body,html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      background: #F3F4F7;
+      /* 确保body和html宽度占满整个视口 */
+    }
+
+    .top {
+      margin-top: 10px;
+      margin-left: 10px;
+      margin-right: 10px;
+      background: #FFF;
+      /* border: 1px solid #000; */
+    }
+
+    .container {
+
+      display: flex;
+      flex-direction: row;
+      /* 子元素水平排列 */
+      justify-content: space-between;
+      /* 子元素之间均匀分布 */
+      width: 100%;
+      /* 容器宽度占满整个页面 */
+      padding: 20px;
+      /* 可选：添加内边距 */
+      box-sizing: border-box;
+      /* 确保padding不会增加容器的总宽度 */
+    }
+
+    .data-box {
+      position: relative;
+      width: 15vw;
+      height: 10vh;
+      text-align: center;
+      margin-bottom: 10px;
+      background: #FFFBF0;
+      border-radius: 10px;
+      /* 添加边框 */
+      padding: 10px;
+      /* 可选：添加内边距以改善可读性 */
+    }
+
+    .data-box div {
+      flex: 1;
+      font-weight: bold;
+    }
+
+    .data-box div:first-child {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+    }
+
+    .data-box div:last-child {
+      color: #4491F7;
+      margin-top: 20px;
+      /* 下划线 */
+      /* text-decoration: underline; */
+    }
+
+    .left {
+      float: left;
+    }
+
+    .right {
+      text-decoration: none; 
+      color: black; 
+      float: right;
+    }
+
+    .jiantou { 
+      font-size: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="top">
+      <div class="div1">
+        <span class="left">今日数据</span>
+        <a class="right" href="../iframe/echarts.html">查看详细数据<span class="jiantou">&nbsp;></span></a>
+      </div><br>
+      <div class="container">
+        <div class="data-box">
+          <div>营业额</div>
+          <div>{{records.turnover}}元</div>
+        </div>
+        <div class="data-box">
+          <div>有效订单数</div>
+          <div>{{records.validOrderCount}}</div>
+        </div>
+        <div class="data-box">
+          <div>订单完成率</div>
+          <div>{{records.orderCompletionRate}}%</div>
+        </div>
+        <div class="data-box">
+          <div>平均客单价</div>
+          <div>{{records.unitPrice}}元</div>
+        </div>
+        <div class="data-box">
+          <div>新增用户数</div>
+          <div>{{records.newUsers}}</div>
+        </div>
+      </div>
+    </div>
+    <div class="top" style="margin-top: 10px;">
+      <div class="div1">
+        <span class="left">订单管理</span>
+        <a class="right" href="../iframe/dingdan.html">查看订单明细<span
+            class="jiantou">&nbsp;></span></a>
+      </div><br>
+      <div class="container">
+        <div class="data-box">
+          <div>待接单</div>
+          <div>{{process.waitingOrders}}</div>
+        </div>
+        <div class="data-box">
+          <div>待派送</div>
+          <div>{{process.deliveredOrders}}</div>
+        </div>
+        <div class="data-box">
+          <div>已完成</div>
+          <div>{{process.completedOrders}}</div>
+        </div>
+        <div class="data-box">
+          <div>已取消</div>
+          <div>{{process.cancelledOrders}}</div>
+        </div>
+        <div class="data-box">
+          <div>全部订单</div>
+          <div>{{process.allOrders}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+<script>
+  var vue = new Vue({
+    el: '#app',
+    data: {
+      
+
+      records: [],
+      process:[],
+    
+    },
+    created() {
+
+      this.getAll();
+
+    },
+    methods: {
+      // 获取7天前的日期
+      getDateSevenDaysAgo() {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1;
+        const day = currentDate.getDate();
+
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(day - 7);
+        const year2 = sevenDaysAgo.getFullYear();
+        const month2 = sevenDaysAgo.getMonth() + 1;
+        const day2 = sevenDaysAgo.getDate();
+
+        return year2 + "-" + month2.toString().padStart(2, '0') + "-" + day2.toString().padStart(2, '0');
+      },
+      // 获取当前日期
+      getDayNow() {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1;
+        const day = currentDate.getDate();
+        return year + "-" + month.toString().padStart(2, '0') + "-" + day.toString().padStart(2, '0');
+      },
+      getAll() {
+        axios({
+          url: "http://" + baseurl + "/admin/workspace/businessData",
+          method: "get",
+          headers: {
+            'Content-Type': 'application/json',
+            'token': localStorage.getItem("token")
+          },
+          params: {
+            "begin": this.getDayNow(),
+            "end": this.getDateSevenDaysAgo(),
+          }
+        }).then(function (response) {
+          console.log(response.data.data);
+          vue.records = response.data.data;
+          vue.records.orderCompletionRate = vue.records.orderCompletionRate*100
+          
+          if (response.data.code == 0) {
+            swal(response.data.msg)
+          }
+        });
+        axios({
+          url: "http://" + baseurl + "/admin/workspace/overviewOrders",
+          method: "get",
+          headers: {
+            'Content-Type': 'application/json',
+            'token': localStorage.getItem("token")
+          },
+          
+        }).then(function (response) {
+          console.log(response.data.data);
+          vue.process = response.data.data;
+          if (response.data.code == 0) {
+            swal(response.data.msg)
+          }
+        });
+      },
+    }
+  })
+</script>
+
+</html>

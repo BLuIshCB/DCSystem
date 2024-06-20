@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分类名称</title>
+    <script src="../commonjs/vue.js"></script>
+    <script src="../commonjs/axios.min.js"></script>
+    <script src="../commonjs/info.js"></script>
+    <style>
+        .records {
+            width: 20vw;
+            height: 15vh;
+        }
+
+        #div1 {
+            margin-top: 100px;
+            display: flex;
+        }
+
+        .records img {
+            width: 20vw;
+            height: 14vh;
+        }
+
+        .records p {
+            width: 20vw;
+            height: 1vh;
+        }
+
+        #div0 {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        #btn1 {
+            width: 4vw;
+            height: 5vh;
+            background: #000000;
+            color: aliceblue;
+        }
+
+        #showButton {
+            border-radius: 5px;
+            border: none;
+            background: #169bd5;
+            color: #ffffff;
+        }
+
+        #hiddenDiv {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50%;
+            height: 50%;
+            z-index: 9999;
+            background-color: rgba(0, 0, 0, 0.5);
+            background: #ffffff;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table.menu-table {
+            width: 100%;
+            border-collapse: collapse;
+            /* 移除相邻边框之间的距离 */
+            margin-top: 20px;
+            /* 与页面顶部保持一些距离 */
+        }
+
+        table.menu-table th,
+        table.menu-table td {
+            border: 1px solid #ddd;
+            /* 添加边框 */
+            padding: 8px;
+            /* 单元格内边距 */
+            text-align: left;
+            /* 文本左对齐 */
+        }
+
+        table.menu-table th {
+            background-color: #f2f2f2;
+            /* 表头背景色 */
+        }
+
+        table.menu-table img {
+            max-width: 100px;
+            /* 图片最大宽度 */
+            height: auto;
+            /* 图片高度自适应 */
+            margin-right: 10px;
+            /* 与右侧文本保持一些距离 */
+        }
+
+        /* 设置遮层罩 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            /* 默认隐藏 */
+        }
+    </style>
+</head>
+
+<body background="#F3F4F7">
+    <div id="app">
+        <div class="overlay" id="overlay"></div>
+        <div id="div0">
+            <form>
+                分类名称：<input placeholder="请填写分类名称" type="text" id="input1">
+                分类类型：<select id="select1" size="1">
+                    <option value="" disabled selected>请选择</option>
+                    <option value="0">
+                        禁用
+                    </option>
+                    <option value="1">
+                        启用
+                    </option>
+                </select>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input id="btn1" type="button" value="搜索" @click="Search()">
+            </form>
+            <button id="showButton" @click="showHiddenDiv">新增菜品分类</button>
+        </div>
+        <table class="menu-table">
+            <thead>
+                <tr>
+                    <th>分类名称</th>
+                    <th>状态</th>
+                    <th>创建时间</th>
+                    <th>修改时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="records" v-for="(item,index) in records" :key="item.id">
+                    <td>{{ item.name }}</td>
+                    <td>{{item.status}}</td>
+                    <td>{{item.createTime}}</td>
+                    <td>{{item.updateTime}}</td>
+                    <td>&nbsp;<input type="button" value="删除" @click="deleteItem(item.id)">&nbsp;<input type="button"
+                            value="变更状态" @click="change0(item.id)"></td>
+                </tr>
+            </tbody>
+
+        </table>
+        <div id="hiddenDiv" style="display: none;">
+            <form onsubmit="return func()">
+                <p>填写以下分类信息</p>
+                <p>&nbsp;分类&nbsp;i&nbsp;&nbsp;d&nbsp;&nbsp;&nbsp;:<input type="text" id="dish_id" /></p>
+                <p>&nbsp;分类名称&nbsp;&nbsp;:<input type="text" id="dish_name" /></p>
+                <p>菜品分类id:<input type="text" id="dish_categorid" /></p>
+
+                <!-- <p>&nbsp;&nbsp;状&nbsp;&nbsp;态&nbsp;&nbsp;:<select id="create_type">
+                        <option value="0">禁用</option>
+                        <option value="1">启用</option>
+                    </select>
+                </p> -->
+                <div style="float: right;">
+                    <button class="my-btn-gray" ng-click="create_paper_cancel()">取消</button>
+                    <input  class="my-btn-blue" type="button" value="保存" @click="add()">
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            inputone: "",
+            inputtwo: "",
+            currentInput: { // 临时存储两个输入框的值  
+                field1: '',
+                field2: ''
+            },
+            savedData: [], // 保存包含两个字段的对象的数组  
+            records: [
+            ],
+            options: [
+                { text: '12345679' },
+                { text: '456' }
+            ],
+            text: "hello cb"
+        },
+        //钩子函数，VUE对象初始化完成后自动执行
+        created() {
+
+            this.getAll();
+
+        },
+        methods: {
+            Search() {
+                this.inputone = document.getElementById('input1').value;
+                this.inputtwo = document.getElementById('select1').value;
+                this.getAll();
+            },
+            add() {
+                console.log(951);
+                const flid = document.getElementById('dish_id').value;
+                const flname = document.getElementById('dish_name').value;
+                const cpflid = document.getElementById('dish_categorid').value;
+                axios({
+                    url: "http://" + baseurl + "/admin/category",
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'token': localStorage.getItem("token")
+                    },
+                    data: {
+                        "id": flid,
+                        "name": flname,
+                        "sort": cpflid
+                    }
+                }).then(function (response) {
+                });
+                this.getAll();
+            },
+            deleteItem(id) {
+                axios({
+                    url: "http://" + baseurl + "/admin/category/"+id,
+                    method: "delete",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'token': localStorage.getItem("token")
+                    },
+                    params: {
+                    }
+                }).then((response) => {
+                    this.getAll(); 
+                }).catch((error) => {
+                    // 处理错误  
+                    console.error(error);
+                });
+            },
+            change0(id){
+                axios({
+                    url: "http://" + baseurl + "/admin/category/status/"+id,
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'token': localStorage.getItem("token")
+                    },
+                    data: {
+                    }
+                }).then((response) => {
+                    this.getAll(); 
+                }).catch((error) => {
+                    // 处理错误  
+                    console.error(error);
+                });
+            },
+            getAll() {
+
+                axios({
+                    url: "http://" + baseurl + "/admin/category/page",
+                    method: "post",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'token': localStorage.getItem("token")
+                    },
+                    data: {
+                        "page": 0,
+                        "pageSize": 100,
+                        "name": this.inputone,
+                        "status": this.inputtwo
+                    }
+                }).then(function (response) {
+                    console.log(response.data.data.records);
+                    // this.records = response.data.data.records;
+
+                    //修改数据
+                    // vue.text=records[1].name;
+                    vue.records = response.data.data.records
+                    for (let i = 0; i < vue.records.length; i++) {
+                        if (vue.records[i].status == 1) {
+
+                            vue.records[i].status = "启用"
+                        } else {
+                            vue.records[i].status = "禁用"
+                        }
+                    }
+                    if (response.data.code == 0) {
+                        swal(response.data.msg)
+                    }
+
+
+                });
+
+            },
+            saveData() {
+                if (this.currentInput.field1 || this.currentInput.field2) { // 检查是否有输入值  
+                    this.savedData.push({ // 将对象添加到数组中  
+                        field1: this.currentInput.field1,
+                        field2: this.currentInput.field2
+                    });
+                    this.currentInput.field1 = ''; // 清空输入框1  
+                    this.currentInput.field2 = ''; // 清空输入框2  
+                }
+            },
+            showHiddenDiv() {
+                var hiddenDiv = document.getElementById("hiddenDiv");
+                var overlay = document.getElementById("overlay");
+                hiddenDiv.style.display = "block"; // 将 display 属性设置为 "block" 来显示元素  
+                overlay.style.display = "block";
+            }
+        }
+    })
+</script>
+
+</html>
