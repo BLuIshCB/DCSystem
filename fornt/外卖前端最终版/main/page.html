@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../commonjs/vue.js"></script>
+    <script src="../commonjs/axios.min.js"></script>
+    <script src="../commonjs/info.js"></script>
+    <!-- 弹窗 -->
+    <link rel="stylesheet" type="text/css" href="http://css.huangwx.cn/css/sweetalert.css">
+    <script type="text/javascript" src="http://css.huangwx.cn/js/sweetalert-dev.js"></script>
+    <style>
+        ul {
+            margin: 0px;
+            padding: 0px;
+
+        }
+
+        ul li {
+            height: 15vh;
+            width: 140px;
+            list-style: none;
+            display: block;
+            font: 0.9em Arial, Helvetica, sans-serif;
+        }
+
+        ul li a {
+            text-align: center;
+            color: #FFF;
+            width: 140px;
+            margin: 0px;
+            padding: 0px 0px 0px 0px;
+            text-decoration: none;
+            display: block;
+            background: #333;
+            line-height: 15vh;
+            border-right: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+
+        }
+
+        ul li a:hover {
+            color: #ffffff;
+            background: #666;
+            /* border-bottom: 1px dashed #FF0000; */
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+
+        #page {
+
+            display: space-between;
+        }
+
+        #right {
+            width: 100%;
+        }
+
+        div iframe {
+            width: 100%;
+            height: 75vh;
+        }
+
+        #top {
+            display: flex;
+            align-items: center;
+            height: 10vh;
+            background: #1E82C0;
+        }
+
+        .left {
+            margin-left: 10px;
+        }
+
+        .left div {
+            background: #FF0000;
+            color: #FFF;
+            border-radius: 5px;
+        }
+
+        .right {
+            height: 4vh;
+            margin-left: 80vw;
+            background: #ff0000;
+            color: #FFF;
+        }
+
+        .hiddenDiv {
+            display: none;
+        }
+
+        .overlay {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div id="top">
+            <div id="status" class="left">
+                <div id="hiddenDiv" class="hiddenDiv">&nbsp;营业中&nbsp;</div>
+                <div id="overlay" class="overlay">&nbsp;停业中&nbsp;</div>
+            </div>
+            <input class="right" type="button" value="更改营业状态" @click="change">
+        </div>
+        <div id="container">
+            <div id="header">
+                <div id="nav">
+                    <div class="navmenu" id="page">
+                        <ul>
+                            <li><a href="../iframe/gzt.html" target="one">工作台</a></li>
+                            <li>
+                                <a href="../iframe/echarts.html" target="one">数据统计</a>
+                            </li>
+                            <li>
+                                <a href="../iframe/caiping.html" target="one">菜品管理</a>
+                            </li>
+                            <li>
+                                <a href="../iframe/fenlei.html" target="one">分类管理</a>
+                            </li>
+                            <li>
+                                <a href="../iframe/dingdan.html" target="one">订单管理</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+            <div id="right"><iframe name="one" id="" src="../iframe/gzt.html"></iframe></div>
+        </div>
+    </div>
+</body>
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            savedData: [], // 保存包含两个字段的对象的数组  
+            records: [
+            ],
+        },
+        created() {
+            this.getAll();
+        },
+        methods: {
+            getAll() {
+
+                //CB:下面的代码不要动，用于创建websocket链接
+                var websocket = null;
+                var clientId = Math.random().toString(36).substr(2);
+
+                //判断当前浏览器是否支持WebSocket
+                if ('WebSocket' in window) {
+                    //连接WebSocket节点
+                    websocket = new WebSocket("ws://"+baseurl+"/ws/" + clientId);
+                }
+                else {
+                    alert('Not support websocket')
+                }
+
+                //连接发生错误的回调方法
+                websocket.onerror = function () {
+                    setMessageInnerHTML("error");
+                };
+
+                //连接成功建立的回调方法
+                websocket.onopen = function () {
+                    setMessageInnerHTML("连接成功");
+                }
+
+                //接收到消息的回调方法
+                websocket.onmessage = function (event) {
+                    // swal(event.data)
+                    mydata = JSON.parse(event.data)
+
+                    console.log(mydata);
+                    swal({
+                        title: mydata.msg,
+                        text: mydata.content,
+                        html: true
+                    });
+
+
+
+                }
+
+                //连接关闭的回调方法
+                websocket.onclose = function () {
+                    console.log("close");
+
+                }
+
+                //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+                window.onbeforeunload = function () {
+                    websocket.close();
+                }
+
+                //将消息显示在网页上，这里不用
+                function setMessageInnerHTML(innerHTML) {
+
+                }
+
+                //发送消息
+                function send() {
+                    var message = document.getElementById('text').value;
+                    websocket.send(message);
+                }
+
+                //关闭连接
+                function closeWebSocket() {
+                    websocket.close();
+                }
+                //websocket部分结束
+
+                axios({
+
+                    url: "http://" + baseurl + "/common/shop/status",
+                    method: "get",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'token': localStorage.getItem("token")
+                    },
+                }).then(function (response) {
+                    console.log(response.data);
+                    var hiddenDiv = document.getElementById("hiddenDiv");
+                    var overlay = document.getElementById("overlay");
+                    var state = response.data.data;
+                    if (response.data.data == 1) {
+                        hiddenDiv.style.display = "block";
+                        overlay.style.display = "none";
+                    } else {
+                        hiddenDiv.style.display = "none";
+                        overlay.style.display = "block";
+                    }
+                    if (response.data.code == 0) {
+                        swal(response.data.msg)
+                    }
+                });
+
+            },
+            change() {
+
+                axios({
+
+                    url: "http://" + baseurl + "/common/shop",
+                    method: "put",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'token': localStorage.getItem("token")
+                    },
+                }).then(function (response) {
+                    // console.log(response.data);
+                    // if (response.data.data == 1) {
+                    //     state = 1;
+                    // } else {
+                    //     state = 0;
+                    // }
+                    if (response.data.code == 0) {
+                        swal(response.data.msg)
+                    }
+
+                });
+                setTimeout(function () {
+                    // console.log("cb");
+                axios({
+
+                    url: "http://" + baseurl + "/common/shop/status",
+                    method: "get",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'token': localStorage.getItem("token")
+                    },
+                }).then(function (response) {
+                    // console.log(response.data);
+                    var hiddenDiv = document.getElementById("hiddenDiv");
+                    var overlay = document.getElementById("overlay");
+                    var state = response.data.data;
+                    if (response.data.data == 1) {
+                        hiddenDiv.style.display = "block";
+                        overlay.style.display = "none";
+                    } else {
+                        hiddenDiv.style.display = "none";
+                        overlay.style.display = "block";
+                    }
+                    if (response.data.code == 0) {
+                        swal(response.data.msg)
+                    }
+                });
+                }, 111);
+                
+                // this.getAll();cb
+            },
+           
+        }
+    })
+</script>
+
+</html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单管理</title>
+    <script src="../commonjs/vue.js"></script>
+    <script src="../commonjs/axios.min.js"></script>
+    <script src="../commonjs/info.js"></script>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            background: #F3F4F7;
+            /* 确保body和html宽度占满整个视口 */
+        }
+
+        ul {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        ul li {
+            height: 10vh;
+            width: 140px;
+            list-style: none;
+            /* display: block; */
+            float: left;
+            display: inline;
+            font: 0.9em Arial, Helvetica, sans-serif;
+        }
+
+        .a {
+            text-align: center;
+            color: #FFF;
+            width: 140px;
+            margin: 0px;
+            padding: 0px 0px 0px 8px;
+            text-decoration: none;
+            display: block;
+            background: #666;
+            line-height: 10vh;
+            border-right: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+
+        }
+
+        .b {
+            background: #333;
+        }
+
+        ul li a:hover {
+            background: #333;
+            /* border-bottom: 1px dashed #FF0000; */
+        }
+
+        #page {
+            height: 10vh;
+            display: space-between;
+        }
+
+        .content {
+            background: #FFF;
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table.menu-table {
+            width: 100%;
+            border-collapse: collapse;
+            /* 移除相邻边框之间的距离 */
+            margin-top: 20px;
+            /* 与页面顶部保持一些距离 */
+        }
+
+        table.menu-table th,
+        table.menu-table td {
+            border: 1px solid #ddd;
+            /* 添加边框 */
+            padding: 8px;
+            /* 单元格内边距 */
+            text-align: left;
+            /* 文本左对齐 */
+        }
+
+        table.menu-table th {
+            background-color: #f2f2f2;
+            /* 表头背景色 */
+        }
+
+        table.menu-table img {
+            max-width: 100px;
+            /* 图片最大宽度 */
+            height: auto;
+            /* 图片高度自适应 */
+            margin-right: 10px;
+            /* 与右侧文本保持一些距离 */
+        }
+
+        .Search {
+            border-radius: 5px;
+            border: none;
+            background: #169bd5;
+            color: #ffffff;
+        }
+
+        .fm {
+            margin-top: 10px;
+        }
+
+        .fm input:nth-of-type(3) {
+            margin-left: 10%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="navmenu" id="page">
+            <ul>
+                <li><a @click="showDiv('div1'),all(),showAnchor('anchor1')" type="button" value="" class="a b"
+                        id="anchor1">全部订单</a></li>
+                <li>
+                    <a @click="showDiv('div2'),showAnchor('anchor2')" type="button" value="2" class="a"
+                        id="anchor2">待接单</a>
+                </li>
+                <li>
+                    <a @click="showDiv('div3'),showAnchor('anchor3')" type="button" value="3" class="a"
+                        id="anchor3">待派送</a>
+                </li>
+                <li>
+                    <a @click="showDiv('div4'),showAnchor('anchor4')" type="button" value="4" class="a"
+                        id="anchor4">派送中</a>
+                </li>
+                <li>
+                    <a @click="showDiv('div5'),showAnchor('anchor5')" type="button" value="5" class="a"
+                        id="anchor5">已完成</a>
+                </li>
+                <li>
+                    <a @click="showDiv('div6'),showAnchor('anchor6')" type="button" value="6" class="a"
+                        id="anchor6">已取消</a>
+                </li>
+            </ul>
+        </div><br>
+        <div id="div1" class="active content" data-value="">
+            <table class="menu-table">
+                <thead>
+                    <tr>
+                        <th>订单号</th>
+                        <th>订单状态</th>
+                        <th>用户名</th>
+                        <th>手机号</th>
+                        <th>地址</th>
+                        <th>下单时间</th>
+                        <th>实收金额</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="records" v-for="(item,index) in records" :key="item.id">
+                        <td>{{ item.number }}</td>
+                        <td>{{item.status}}</td>
+                        <td>{{item.userName}}</td>
+                        <td>{{item.phone}}</td>
+                        <td>{{item.address}}</td>
+                        <td>{{item.orderTime}}</td>
+                        <td>{{item.amount}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="div2" class="content" data-value="2">
+            <form class="fm">
+                订单号: <input type="text" id="input1">
+                手机号: <input type="text" id="input2">
+                <input type="button" value="查询" class="Search" @click="search(1)">
+                <input type="button" value="重置" class="Search" @click="reset(1)">
+            </form>
+            <table class="menu-table">
+                <thead>
+                    <tr>
+                        <th>订单号</th>
+                        <th>订单菜品</th>
+                        <th>地址</th>
+                        <th>手机号</th>
+                        <th>下单时间</th>
+                        <th>实收金额</th>
+                        <th>备注</th>
+                        <th>操作</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="records" v-for="(item,index) in records" :key="item.id">
+                        <td>{{ item.number }}</td>
+                        <td>{{item.orderDishes}}</td>
+                        <td>{{item.address}}</td>
+                        <td>{{item.phone}}</td>
+                        <td>{{item.orderTime}}</td>
+                        <td>{{item.amount}}</td>
+                        <td>{{item.remark}}</td>
+                        <td><input type="button" value="接单" @click="confirm(item.id)">&nbsp;<input type="button"
+                                value="拒单" @click="rejection(item.id)">&nbsp;</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="div3" class="content" data-value="3">
+            <form class="fm">
+                订单号: <input type="text" id="input3" name="name">
+                手机号: <input type="text" id="input4" name="mm">
+                <input type="button" value="查询" class="Search" @click="search(3)">
+                <input type="button" value="重置" class="Search">
+            </form>
+            <table class="menu-table">
+                <thead>
+                    <tr>
+                        <th>订单号</th>
+                        <th>订单菜品</th>
+                        <th>地址</th>
+                        <th>手机号</th>
+                        <th>下单时间</th>
+                        <th>备注</th>
+                        <th>餐具数量</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="records" v-for="(item,index) in records" :key="item.id">
+                        <td>{{ item.number }}</td>
+                        <td>{{item.orderDishes}}</td>
+                        <td>{{item.address}}</td>
+                        <td>{{item.phone}}</td>
+                        <td>{{item.orderTime}}</td>
+                        <td>{{item.remark}}</td>
+                        <td>{{item.tablewareNumber}}</td>
+                        <td><input type="button" value="派送" @click="delivery(item.id)">&nbsp;<input type="button"
+                                value="取消" @click="cancel(item.id)">&nbsp;</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="div4" class="content" data-value="4">
+            <form class="fm">
+                订单号: <input type="text" id="input5" name="name">
+                手机号: <input type="text" id="input6" name="mm">
+                <input type="button" value="查询" class="Search" @click="search(5)">
+                <input type="button" value="重置" class="Search">
+            </form>
+            <table class="menu-table">
+                <thead>
+                    <tr>
+                        <th>订单号</th>
+                        <th>订单菜品</th>
+                        <th>地址</th>
+                        <th>手机号</th>
+                        <th>预计送达时间</th>
+                        <th>备注</th>
+                        <th>餐具数量</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="records" v-for="(item,index) in records" :key="item.id">
+                        <td>{{ item.number }}</td>
+                        <td>{{item.orderDishes}}</td>
+                        <td>{{item.address}}</td>
+                        <td>{{item.phone}}</td>
+                        <td>{{item.estimatedDeliveryTime}}</td>
+                        <td>{{item.remark}}</td>
+                        <td>{{item.tablewareNumber}}</td>
+                        <td><input type="button" value="完成" @click="complete(item.id)">&nbsp;</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="div5" class="content" data-value="5">
+            <form class="fm">
+                订单号: <input type="text" id="input7" name="name">
+                手机号: <input type="text" id="input8" name="mm">
+                <input type="button" value="查询" class="Search" @click="search(7)">
+                <input type="button" value="重置" class="Search">
+            </form>
+            <table class="menu-table">
+                <thead>
+                    <tr>
+                        <th>订单号</th>
+                        <th>用户名</th>
+                        <th>手机号</th>
+                        <th>地址</th>
+                        <th>送达时间</th>
+                        <th>实收金额</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="records" v-for="(item,index) in records" :key="item.id">
+                        <td>{{ item.number }}</td>
+                        <td>{{item.userName}}</td>
+                        <td>{{item.phone}}</td>
+                        <td>{{item.address}}</td>
+                        <td>{{item.estimatedDeliveryTime}}</td>
+                        <td>{{item.amount}}</td>
+                        <td>{{item.remark}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="div6" class="content" data-value="6">
+            <form class="fm">
+                订单号: <input type="text" id="input9" name="name">
+                手机号: <input type="text" id="input10" name="mm">
+                <input type="button" value="查询" class="Search" @click="search(9)">
+                <input type="button" value="重置" class="Search">
+            </form>
+            <table class="menu-table">
+                <thead>
+                    <tr>
+                        <th>订单号</th>
+                        <th>用户名</th>
+                        <th>手机号</th>
+                        <th>地址</th>
+                        <th>下单时间</th>
+                        <th>取消时间</th>
+                        <th>取消原因</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="records" v-for="(item,index) in records" :key="item.id">
+                        <td>{{ item.number }}</td>
+                        <td>{{item.userName}}</td>
+                        <td>{{item.phone}}</td>
+                        <td>{{item.address}}</td>
+                        <td>{{item.orderTime}}</td>
+                        <td>{{item.cancelTime}}</td>
+                        <td>{{item.cancelReason}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            inputone: "",
+            inputtwo: "",
+            status,
+            records: [
+            ],
+        },
+        //钩子函数，VUE对象初始化完成后自动执行
+        created() {
+
+            this.getAll();
+
+        },
+
+        methods: {
+            search(num) {
+                this.inputone = document.getElementById("input" + num).value;
+                this.inputtwo = document.getElementById('input' + (num + 1)).value;
+                this.getAll();
+            },
+            reset(num) {
+                document.getElementById("input" + num).value = '';
+                document.getElementById('input' + (num + 1)).value = '';
+                this.getAll();
+            },
+            showDiv(divId) {
+                // 隐藏所有 content 类的 div
+                document.querySelectorAll('.content').forEach(function (div) {
+                    div.classList.remove('active');
+                });
+                // 显示指定的 div
+                var divToShow = document.getElementById(divId);
+                // 更新状态
+                status = divToShow.getAttribute('data-value');
+                divToShow.classList.add('active');
+                this.getAll();
+            },
+            showAnchor(anchorId) {
+                document.querySelectorAll('.a').forEach(function (a) {
+                    a.classList.remove('b');
+                });
+                console.log(1);
+                var aToShow = document.getElementById(anchorId);
+                console.log(aToShow);
+                aToShow.classList.add('b');
+            },
+            all() {
+                this.inputone = null;
+                this.inputtwo = null;
+                this.getAll();
+            },
+            confirm(id) {
+                axios({
+                    url: "http://" + baseurl + "/admin/order/confirm",
+                    method: "put",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'token': localStorage.getItem("token")
+                    },
+                    data: {
+                        "id": id,
+                        "status": 3
+                    }
+                }).then((response) => {
+                    this.getAll();
+                }).catch((error) => {
+                    // 处理错误  
+                    console.error(error);
+                });
+            },
+            rejection(id) {
+                axios({
+                    url: "http://" + baseurl + "/admin/order/rejection",
+                    method: "put",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'token': localStorage.getItem("token")
+                    },
+                    data: {
+                        "id": id,
+                        "rejectionReason": "拒绝订单原因"
+                    }
+                }).then((response) => {
+                    this.getAll();
+                }).catch((error) => {
+                    // 处理错误  
+                    console.error(error);
+                });
+            },
+
+            delivery(id) {
+                axios({
+                    url: "http://" + baseurl + "/admin/order/delivery/"+id,
+                    method: "put",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'token': localStorage.getItem("token")
+                    },
+                    params: {
+                    }
+                }).then((response) => {
+                    this.getAll();
+                }).catch((error) => {
+                    // 处理错误  
+                    console.error(error);
+                });
+            },
+            cancel(id) {
+                axios({
+                    url: "http://" + baseurl + "/admin/order/cancel",
+                    method: "put",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'token': localStorage.getItem("token")
+                    },
+                    data: {
+                        "id": id,
+                        "rejectionReason": "取消订单原因"
+                    }
+                }).then((response) => {
+                    this.getAll();
+                }).catch((error) => {
+                    // 处理错误  
+                    console.error(error);
+                });
+            },
+            complete(id) {
+                axios({
+                    url: "http://" + baseurl + "/admin/order/complete/"+id,
+                    method: "put",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'token': localStorage.getItem("token")
+                    },
+                    params: {
+                    }
+                }).then((response) => {
+                    this.getAll();
+                }).catch((error) => {
+                    // 处理错误  
+                    console.error(error);
+                });
+            },
+            getAll() {
+                axios({
+
+                    url: "http://" + baseurl + "/admin/order/conditionSearch",
+                    method: "get",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'token': localStorage.getItem("token")
+                    },
+                    params: {
+                        "page": 1,
+                        "pageSize": 100,
+                        "number": this.inputone,
+                        "phone": this.inputtwo,
+                        "status": status
+                    }
+                }).then(function (response) {
+                    vue.records = response.data.data.records
+                    for (var i = 0; i < vue.records.length; i++) {
+                        if (vue.records[i].status == 1) {
+
+                            vue.records[i].status = "待付款"
+                        }
+                        else if (vue.records[i].status == 2) {
+                            vue.records[i].status = "待接单"
+                        }
+                        else if (vue.records[i].status == 3) {
+                            vue.records[i].status = "已接单"
+                        }
+                        else if (vue.records[i].status == 4) {
+                            vue.records[i].status = "派送中"
+                        }
+                        else if (vue.records[i].status == 5) {
+                            vue.records[i].status = "已完成"
+                        }
+                        else if (vue.records[i].status == 6) {
+                            vue.records[i].status = "已取消"
+                        }
+                    }
+                    if (response.data.code == 0) {
+                        swal(response.data.msg)
+                    }
+
+
+                });
+
+            },
+
+        }
+    })
+</script>
+
+</html>

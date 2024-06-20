@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登陆</title>
+  <script src="../commonjs/axios.min.js"></script>
+  <script src="../commonjs/info.js"></script>
+   <!-- 弹窗 -->
+   <link rel="stylesheet" type="text/css" href="http://css.huangwx.cn/css/sweetalert.css">
+   <script type="text/javascript" src="http://css.huangwx.cn/js/sweetalert-dev.js"></script>
+  <style type="text/css">
+  
+    body{
+      background-repeat:no-repeat;
+      background-attachment:fixed;
+      background-size:100% 100%;
+      display:flex; 
+      align-items:center;
+      text-align:center;
+      flex-direction: column;
+    }
+    #div0{
+      background: beige;
+      opacity: 0.6;  
+      border:2px solid #a1a1a1;
+      border-radius:20px;
+      -moz-box-shadow:2px 2px 5px #333333;
+      -webkit-box-shadow:2px 2px 5px #333333;
+      box-shadow: 7px 15px 30px #285a63;
+      height: 150px;
+    }
+    p{
+	    margin-top: 20%;	    
+      font-size: 20px;
+      color: rgb(69, 40, 5);
+    }
+    #div1{  
+      width: 300px;
+      height: 60px;  
+    }
+    #div2{
+      width: 300px;
+      height: 30px;
+    }
+    #div3{
+      width: 300px;
+      height: 60px;
+    }
+    div button{
+      width: 60px;
+      height: 30px;
+    }
+  </style>
+  <!-- 导入弹窗的样式 -->
+  <link rel="stylesheet" type="text/css" href="http://css.huangwx.cn/css/sweetalert.css">
+  <script type="text/javascript" src="http://css.huangwx.cn/js/sweetalert-dev.js"></script>
+</head>
+
+<body background="../图片/微信图片_20240420205558.jpg">
+  <P>餐馆后台管理系统</P>
+  <div id="div0">
+    <div id="div1"><br>
+      <form>
+        用户名: <input type="text" id="input1" name="name"><br>
+        密&emsp;码: <input type="password" id="input2" name="mm">
+      </form>
+    </div>
+    <!-- <div id="div2">
+      <form onsubmit="return submitTest();">
+        <input type="checkbox" name="vehicle" value="music">记住账号
+        <input type="checkbox" name="vehicle" value="mkbk'">记住密码
+      </form>
+    </div> -->
+    <br>
+    <div id="div3">
+      <button type="button" onclick="login()">登录</button>
+    </div>
+  </div>
+</body>
+
+<script language="javascript" type="text/javascript">
+  
+  function login(){
+    console.log(baseurl);
+    const username = document.getElementById('input1').value;
+    const password = document.getElementById('input2').value;
+    
+    axios({
+             url:"http://"+baseurl+"/admin/employee/login",
+                            method:"post",
+                            headers: {'Content-Type': 'application/json'},
+                            data:{
+                                username:username,
+                                password:password
+                            }
+                            
+                        }).then(function (response) {
+                            console.log(response.data);
+                            if(response.data.code==0){
+                              swal(response.data.msg)
+                            }
+                            if(response.data.code==1){
+                              swal("登陆成功，一秒后进行跳转")
+                              setInfo("token",response.data.data.token)
+                              //将数据存储到localStorage
+                              setTimeout(function(){
+                                console.log("跳转");
+                                window.location.href="../main/page.html";
+                              },800)
+                            }
+                        }).catch(function (error) {
+                          swal({
+                        title: "网络错误",
+                        text: "请检查网络后重试",
+                        html: true
+                    });
+                        });
+  }
+  function setInfo(name, value) {
+    localStorage.setItem(name, value);
+}
+function getInfo(name){
+  let cat = localStorage.getItem(name);
+  console.log(cat);
+
+}
+
+// function getCookie(c_name){
+//     if (document.cookie.length>0){
+//         c_start=document.cookie.indexOf(c_name + "=");
+//         if (c_start!=-1){
+//             c_start=c_start + c_name.length+1;
+//             c_end=document.cookie.indexOf(";",c_start);
+//             if (c_end==-1){ 
+//                 c_end=document.cookie.length;
+//             }
+
+//             return unescape(document.cookie.substring(c_start,c_end));
+//         }
+//      }
+
+//     return "";
+// }
+
+
+
+  // function $(id){return document.getElementById(id)}
+  // console.log(input1);
+  // console.log(11);
+  // function submitTest(){
+  //   var msg=("input1").value;
+  //   // alert(msg);
+  //   log(msg)
+  // }
+    // function login(){
+    //   // 获取表单元素
+    //   console.log(11);
+    //   // const formElement = document.getElementByid('inputone');
+    //   const formElement = document.getElementById('inputone');
+    //   console.log(formElement);
+    //   // 监听表单提交事件
+      
+    //   formElement.addEventListener('submit', function(event) {
+    //   // 阻止表单默认提交行为
+    //   event.preventDefault();
+    //   console.log(12);
+    //   // 获取表单数据
+    //   const formData = new FormData(formElement);
+    //   console.log(11);
+    //     console.log(formData);
+    //   // 将表单数据转换为JSON格式
+    //   const jsonData = {};
+    //   formData.forEach((value, key) => {
+    //   jsonData[key] = value;
+    //   });
+
+    //   // 输出表单数据
+    //   console.log(jsonData);
+
+    //   // 可以将jsonData发送给后端或进行其他操作
+    //   });
+    // }
+</script>
+
+</html>
